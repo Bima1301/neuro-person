@@ -7,8 +7,489 @@ datasource db {
   provider = "postgresql"
 }
 
-model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String
+model Organization {
+  id      String  @id @default(cuid())
+  name    String
+  slug    String  @unique // URL-friendly identifier
+  logo    String?
+  address String?
+  phone   String?
+  email   String?
+  website String?
+
+  // Geofencing - polygon area untuk absensi
+  geoPolygon Json? // Array of [lat, lng] coordinates forming a polygon
+  geoCenter  Json? // { lat: number, lng: number } center point
+  geoRadius  Float? // Optional radius in meters for circular geofence
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  employees          Employee[]
+  departments        Department[]
+  positions          Position[]
+  shifts             Shift[]
+  allowanceTypes     AllowanceType[]
+  attendanceTypes    AttendanceType[]
+  attendances        Attendance[]
+  permissionRequests PermissionRequest[]
+  payrolls           Payroll[]
+  documentEmbeddings DocumentEmbedding[]
+  chatHistories      ChatHistory[]
+}
+
+// ==================== BETTER AUTH TABLES ====================
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation("UserSessions", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  userId                String
+  user                  User      @relation("UserAccounts", fields: [userId], references: [id], onDelete: Cascade)
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier, value])
+}
+
+// ==================== USER & AUTH ====================
+model User {
+  id            String  @id @default(cuid())
+  email         String
+  name          String
+  emailVerified Boolean @default(false)
+  image         String?
+  role          Role    @default(EMPLOYEE)
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions      Session[]      @relation("UserSessions")
+  accounts      Account[]      @relation("UserAccounts")
+  employee      Employee?
+  notifications Notification[]
+  chatHistories ChatHistory[]
+
+  @@unique([email])
+  @@index([email])
+  @@index([organizationId])
+}
+
+enum Role {
+  ADMIN
+  HR_MANAGER
+  MANAGER
+  EMPLOYEE
+}
+
+// ==================== EMPLOYEE ====================
+model Employee {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  employeeId    String // NIK/Employee Number (unique per org)
+  username      String? // Better Auth username (auto-generated, read-only)
+  firstName     String
+  lastName      String
+  email         String
+  phone         String?
+  address       String?
+  city          String?
+  dateOfBirth   DateTime?
+  gender        Gender?
+  maritalStatus MaritalStatus?
+
+  // Employment Info
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  positionId   String?
+  position     Position?   @relation(fields: [positionId], references: [id])
+  managerId    String?
+  manager      Employee?   @relation("ManagerEmployee", fields: [managerId], references: [id])
+  subordinates Employee[]  @relation("ManagerEmployee")
+
+  hireDate       DateTime
+  employmentType EmploymentType @default(FULL_TIME)
+  status         EmployeeStatus @default(ACTIVE)
+
+  // Salary
+  baseSalary Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendances        Attendance[]
+  permissionRequests PermissionRequest[]
+  payrolls           Payroll[]
+  allowances         EmployeeAllowance[]
+  employeeShifts     EmployeeShift[]
+
+  @@unique([employeeId, organizationId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// ==================== DEPARTMENT & POSITION ====================
+model Department {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employees Employee[]
+  positions Position[]
+
+  @@unique([name, organizationId])
+}
+
+model Position {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name                 String
+  description          String?
+  departmentId         String
+  baseSalary           Float?                @default(0)
+  shiftPresenceType    ShiftPresenceType?
+  locationPresenceType LocationPresenceType?
+  department           Department            @relation(fields: [departmentId], references: [id])
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  employees Employee[]
+
+  @@unique([name, departmentId])
+}
+
+enum ShiftPresenceType {
+  FIXED
+  FLEXIBLE
+}
+
+enum LocationPresenceType {
+  FIXED
+  FLEXIBLE
+}
+
+// ==================== SHIFT ====================
+model Shift {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name      String // e.g., "Morning Shift", "Night Shift"
+  startTime String // e.g., "08:00"
+  endTime   String // e.g., "17:00"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employeeShifts EmployeeShift[]
+
+  @@unique([name, organizationId])
+}
+
+// ==================== ATTENDANCE TYPE ====================
+model AttendanceType {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name           String
+  code           String? // Optional code
+  isMustPresence Boolean  @default(true) // If true, employee can do CICO, if false (e.g., CUTI), cannot do CICO
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  employeeShifts     EmployeeShift[]
+  permissionRequests PermissionRequest[]
+
+  @@unique([name, organizationId])
+}
+
+model EmployeeShift {
+  id               String         @id @default(cuid())
+  employeeId       String
+  employee         Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  attendanceTypeId String
+  attendanceType   AttendanceType @relation(fields: [attendanceTypeId], references: [id], onDelete: Cascade)
+  shiftId          String?
+  shift            Shift?         @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  date             DateTime // Specific date for this shift assignment
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([employeeId, date])
+}
+
+// ==================== ATTENDANCE ====================
+model Attendance {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  date          DateTime
+  checkIn       DateTime?
+  checkOut      DateTime?
+  checkInPhoto  String? // URL of check-in photo
+  checkOutPhoto String? // URL of check-out photo
+  checkInNotes  String? // Notes for check-in
+  checkOutNotes String? // Notes for check-out
+  checkInLat    Float? // Latitude for check-in location
+  checkInLng    Float? // Longitude for check-in location
+  checkOutLat   Float? // Latitude for check-out location
+  checkOutLng   Float? // Longitude for check-out location
+  status        AttendanceStatus @default(PRESENT)
+  notes         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([employeeId, date])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  HALF_DAY
+  ON_LEAVE
+}
+
+// ==================== PERMISSION (PERIZINAN) ====================
+model PermissionRequest {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  attendanceTypeId String
+  attendanceType   AttendanceType @relation(fields: [attendanceTypeId], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+  reason    String? // Keterangan
+  status    PermissionStatus @default(PENDING)
+
+  approvedById   String?
+  approvedAt     DateTime?
+  rejectedReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PermissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// ==================== PAYROLL ====================
+model Payroll {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  period         DateTime // Month/Year
+  baseSalary     Float
+  totalAllowance Float    @default(0)
+  totalDeduction Float    @default(0)
+  netSalary      Float
+
+  status PayrollStatus @default(PENDING)
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([employeeId, period])
+}
+
+enum PayrollStatus {
+  PENDING
+  PROCESSING
+  PAID
+  CANCELLED
+}
+
+model AllowanceType {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  amount      Float    @default(0)
+  isFixed     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employeeAllowances EmployeeAllowance[]
+
+  @@unique([name, organizationId])
+}
+
+model EmployeeAllowance {
+  id              String        @id @default(cuid())
+  employeeId      String
+  employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  allowanceTypeId String
+  allowanceType   AllowanceType @relation(fields: [allowanceTypeId], references: [id])
+  amount          Float
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([employeeId, allowanceTypeId])
+}
+
+// ==================== NOTIFICATIONS ====================
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title   String
+  message String
+  type    NotificationType
+  isRead  Boolean          @default(false)
+  link    String?
+
+  createdAt DateTime @default(now())
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  SUCCESS
+  ERROR
+  LEAVE_REQUEST
+  PAYROLL
+  ATTENDANCE
+}
+
+// ==================== AI CHAT & EMBEDDINGS ====================
+
+// Generic embedding storage untuk semua jenis dokumen
+model DocumentEmbedding {
+  id String @id @default(cuid())
+
+  // Content & Vector
+  content   String                     @db.Text // Text yang di-embed
+  embedding Unsupported("vector(384)") // Local embedding dimension (all-MiniLM-L6-v2)
+  // Note: Previously used vector(768) for Gemini. If migrating, need to re-index all embeddings.
+
+  // Metadata untuk tracking source
+  metadata Json // { type: 'employee', id: '...', organizationId: '...', ... }
+
+  // Organization scope
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@index([organizationId, metadata(path: "$.type")])
+}
+
+model ChatHistory {
+  id String @id @default(cuid())
+
+  // User & Organization
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Conversation
+  question String @db.Text
+  answer   String @db.Text
+
+  // RAG metadata
+  context Json? // { sources: [...], totalSources: number, searchTime: number }
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([organizationId])
+  @@index([createdAt])
 }

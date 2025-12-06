@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.1.0",
   "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Todo {\n  id        Int      @id @default(autoincrement())\n  title     String\n  createdAt DateTime @default(now())\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel Organization {\n  id      String  @id @default(cuid())\n  name    String\n  slug    String  @unique // URL-friendly identifier\n  logo    String?\n  address String?\n  phone   String?\n  email   String?\n  website String?\n\n  // Geofencing - polygon area untuk absensi\n  geoPolygon Json? // Array of [lat, lng] coordinates forming a polygon\n  geoCenter  Json? // { lat: number, lng: number } center point\n  geoRadius  Float? // Optional radius in meters for circular geofence\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  users              User[]\n  employees          Employee[]\n  departments        Department[]\n  positions          Position[]\n  shifts             Shift[]\n  allowanceTypes     AllowanceType[]\n  attendanceTypes    AttendanceType[]\n  attendances        Attendance[]\n  permissionRequests PermissionRequest[]\n  payrolls           Payroll[]\n  documentEmbeddings DocumentEmbedding[]\n  chatHistories      ChatHistory[]\n}\n\n// ==================== BETTER AUTH TABLES ====================\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String   @unique\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(\"UserSessions\", fields: [userId], references: [id], onDelete: Cascade)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([userId])\n}\n\nmodel Account {\n  id                    String    @id\n  userId                String\n  user                  User      @relation(\"UserAccounts\", fields: [userId], references: [id], onDelete: Cascade)\n  accountId             String\n  providerId            String\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@unique([providerId, accountId])\n  @@index([userId])\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier, value])\n}\n\n// ==================== USER & AUTH ====================\nmodel User {\n  id            String  @id @default(cuid())\n  email         String\n  name          String\n  emailVerified Boolean @default(false)\n  image         String?\n  role          Role    @default(EMPLOYEE)\n\n  organizationId String?\n  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  sessions      Session[]      @relation(\"UserSessions\")\n  accounts      Account[]      @relation(\"UserAccounts\")\n  employee      Employee?\n  notifications Notification[]\n  chatHistories ChatHistory[]\n\n  @@unique([email])\n  @@index([email])\n  @@index([organizationId])\n}\n\nenum Role {\n  ADMIN\n  HR_MANAGER\n  MANAGER\n  EMPLOYEE\n}\n\n// ==================== EMPLOYEE ====================\nmodel Employee {\n  id     String @id @default(cuid())\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  employeeId    String // NIK/Employee Number (unique per org)\n  username      String? // Better Auth username (auto-generated, read-only)\n  firstName     String\n  lastName      String\n  email         String\n  phone         String?\n  address       String?\n  city          String?\n  dateOfBirth   DateTime?\n  gender        Gender?\n  maritalStatus MaritalStatus?\n\n  // Employment Info\n  departmentId String?\n  department   Department? @relation(fields: [departmentId], references: [id])\n  positionId   String?\n  position     Position?   @relation(fields: [positionId], references: [id])\n  managerId    String?\n  manager      Employee?   @relation(\"ManagerEmployee\", fields: [managerId], references: [id])\n  subordinates Employee[]  @relation(\"ManagerEmployee\")\n\n  hireDate       DateTime\n  employmentType EmploymentType @default(FULL_TIME)\n  status         EmployeeStatus @default(ACTIVE)\n\n  // Salary\n  baseSalary Float @default(0)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  attendances        Attendance[]\n  permissionRequests PermissionRequest[]\n  payrolls           Payroll[]\n  allowances         EmployeeAllowance[]\n  employeeShifts     EmployeeShift[]\n\n  @@unique([employeeId, organizationId])\n}\n\nenum Gender {\n  MALE\n  FEMALE\n}\n\nenum MaritalStatus {\n  SINGLE\n  MARRIED\n  DIVORCED\n  WIDOWED\n}\n\nenum EmploymentType {\n  FULL_TIME\n  PART_TIME\n  CONTRACT\n  INTERN\n}\n\nenum EmployeeStatus {\n  ACTIVE\n  INACTIVE\n}\n\n// ==================== DEPARTMENT & POSITION ====================\nmodel Department {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  name        String\n  description String?\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  employees Employee[]\n  positions Position[]\n\n  @@unique([name, organizationId])\n}\n\nmodel Position {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  name                 String\n  description          String?\n  departmentId         String\n  baseSalary           Float?                @default(0)\n  shiftPresenceType    ShiftPresenceType?\n  locationPresenceType LocationPresenceType?\n  department           Department            @relation(fields: [departmentId], references: [id])\n  createdAt            DateTime              @default(now())\n  updatedAt            DateTime              @updatedAt\n\n  employees Employee[]\n\n  @@unique([name, departmentId])\n}\n\nenum ShiftPresenceType {\n  FIXED\n  FLEXIBLE\n}\n\nenum LocationPresenceType {\n  FIXED\n  FLEXIBLE\n}\n\n// ==================== SHIFT ====================\nmodel Shift {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  name      String // e.g., \"Morning Shift\", \"Night Shift\"\n  startTime String // e.g., \"08:00\"\n  endTime   String // e.g., \"17:00\"\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  employeeShifts EmployeeShift[]\n\n  @@unique([name, organizationId])\n}\n\n// ==================== ATTENDANCE TYPE ====================\nmodel AttendanceType {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  name           String\n  code           String? // Optional code\n  isMustPresence Boolean  @default(true) // If true, employee can do CICO, if false (e.g., CUTI), cannot do CICO\n  createdAt      DateTime @default(now())\n  updatedAt      DateTime @updatedAt\n\n  employeeShifts     EmployeeShift[]\n  permissionRequests PermissionRequest[]\n\n  @@unique([name, organizationId])\n}\n\nmodel EmployeeShift {\n  id               String         @id @default(cuid())\n  employeeId       String\n  employee         Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n  attendanceTypeId String\n  attendanceType   AttendanceType @relation(fields: [attendanceTypeId], references: [id], onDelete: Cascade)\n  shiftId          String?\n  shift            Shift?         @relation(fields: [shiftId], references: [id], onDelete: Cascade)\n  date             DateTime // Specific date for this shift assignment\n  createdAt        DateTime       @default(now())\n  updatedAt        DateTime       @updatedAt\n\n  @@unique([employeeId, date])\n}\n\n// ==================== ATTENDANCE ====================\nmodel Attendance {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  employeeId String\n  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n\n  date          DateTime\n  checkIn       DateTime?\n  checkOut      DateTime?\n  checkInPhoto  String? // URL of check-in photo\n  checkOutPhoto String? // URL of check-out photo\n  checkInNotes  String? // Notes for check-in\n  checkOutNotes String? // Notes for check-out\n  checkInLat    Float? // Latitude for check-in location\n  checkInLng    Float? // Longitude for check-in location\n  checkOutLat   Float? // Latitude for check-out location\n  checkOutLng   Float? // Longitude for check-out location\n  status        AttendanceStatus @default(PRESENT)\n  notes         String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([employeeId, date])\n}\n\nenum AttendanceStatus {\n  PRESENT\n  ABSENT\n  LATE\n  HALF_DAY\n  ON_LEAVE\n}\n\n// ==================== PERMISSION (PERIZINAN) ====================\nmodel PermissionRequest {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  employeeId String\n  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n\n  attendanceTypeId String\n  attendanceType   AttendanceType @relation(fields: [attendanceTypeId], references: [id])\n\n  startDate DateTime\n  endDate   DateTime\n  reason    String? // Keterangan\n  status    PermissionStatus @default(PENDING)\n\n  approvedById   String?\n  approvedAt     DateTime?\n  rejectedReason String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum PermissionStatus {\n  PENDING\n  APPROVED\n  REJECTED\n  CANCELLED\n}\n\n// ==================== PAYROLL ====================\nmodel Payroll {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  employeeId String\n  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n\n  period         DateTime // Month/Year\n  baseSalary     Float\n  totalAllowance Float    @default(0)\n  totalDeduction Float    @default(0)\n  netSalary      Float\n\n  status PayrollStatus @default(PENDING)\n  paidAt DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@unique([employeeId, period])\n}\n\nenum PayrollStatus {\n  PENDING\n  PROCESSING\n  PAID\n  CANCELLED\n}\n\nmodel AllowanceType {\n  id             String       @id @default(cuid())\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  name        String\n  description String?\n  amount      Float    @default(0)\n  isFixed     Boolean  @default(true)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  employeeAllowances EmployeeAllowance[]\n\n  @@unique([name, organizationId])\n}\n\nmodel EmployeeAllowance {\n  id              String        @id @default(cuid())\n  employeeId      String\n  employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)\n  allowanceTypeId String\n  allowanceType   AllowanceType @relation(fields: [allowanceTypeId], references: [id])\n  amount          Float\n  createdAt       DateTime      @default(now())\n  updatedAt       DateTime      @updatedAt\n\n  @@unique([employeeId, allowanceTypeId])\n}\n\n// ==================== NOTIFICATIONS ====================\nmodel Notification {\n  id     String @id @default(cuid())\n  userId String\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  title   String\n  message String\n  type    NotificationType\n  isRead  Boolean          @default(false)\n  link    String?\n\n  createdAt DateTime @default(now())\n}\n\nenum NotificationType {\n  INFO\n  WARNING\n  SUCCESS\n  ERROR\n  LEAVE_REQUEST\n  PAYROLL\n  ATTENDANCE\n}\n\n// ==================== AI CHAT & EMBEDDINGS ====================\n\n// Generic embedding storage untuk semua jenis dokumen\nmodel DocumentEmbedding {\n  id String @id @default(cuid())\n\n  // Content & Vector\n  content   String                     @db.Text // Text yang di-embed\n  embedding Unsupported(\"vector(384)\") // Local embedding dimension (all-MiniLM-L6-v2)\n  // Note: Previously used vector(768) for Gemini. If migrating, need to re-index all embeddings.\n\n  // Metadata untuk tracking source\n  metadata Json // { type: 'employee', id: '...', organizationId: '...', ... }\n\n  // Organization scope\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  // Timestamps\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([organizationId])\n  @@index([organizationId, metadata(path: \"$.type\")])\n}\n\nmodel ChatHistory {\n  id String @id @default(cuid())\n\n  // User & Organization\n  userId         String\n  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)\n  organizationId String\n  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)\n\n  // Conversation\n  question String @db.Text\n  answer   String @db.Text\n\n  // RAG metadata\n  context Json? // { sources: [...], totalSources: number, searchTime: number }\n\n  // Timestamps\n  createdAt DateTime @default(now())\n\n  @@index([userId])\n  @@index([organizationId])\n  @@index([createdAt])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Todo\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Organization\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"website\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"geoPolygon\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"geoCenter\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"geoRadius\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrganizationToUser\"},{\"name\":\"employees\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToOrganization\"},{\"name\":\"departments\",\"kind\":\"object\",\"type\":\"Department\",\"relationName\":\"DepartmentToOrganization\"},{\"name\":\"positions\",\"kind\":\"object\",\"type\":\"Position\",\"relationName\":\"OrganizationToPosition\"},{\"name\":\"shifts\",\"kind\":\"object\",\"type\":\"Shift\",\"relationName\":\"OrganizationToShift\"},{\"name\":\"allowanceTypes\",\"kind\":\"object\",\"type\":\"AllowanceType\",\"relationName\":\"AllowanceTypeToOrganization\"},{\"name\":\"attendanceTypes\",\"kind\":\"object\",\"type\":\"AttendanceType\",\"relationName\":\"AttendanceTypeToOrganization\"},{\"name\":\"attendances\",\"kind\":\"object\",\"type\":\"Attendance\",\"relationName\":\"AttendanceToOrganization\"},{\"name\":\"permissionRequests\",\"kind\":\"object\",\"type\":\"PermissionRequest\",\"relationName\":\"OrganizationToPermissionRequest\"},{\"name\":\"payrolls\",\"kind\":\"object\",\"type\":\"Payroll\",\"relationName\":\"OrganizationToPayroll\"},{\"name\":\"documentEmbeddings\",\"kind\":\"object\",\"type\":\"DocumentEmbedding\",\"relationName\":\"DocumentEmbeddingToOrganization\"},{\"name\":\"chatHistories\",\"kind\":\"object\",\"type\":\"ChatHistory\",\"relationName\":\"ChatHistoryToOrganization\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserSessions\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserAccounts\"},{\"name\":\"accountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"idToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accessTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"refreshTokenExpiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Verification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"identifier\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"UserSessions\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"UserAccounts\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToUser\"},{\"name\":\"notifications\",\"kind\":\"object\",\"type\":\"Notification\",\"relationName\":\"NotificationToUser\"},{\"name\":\"chatHistories\",\"kind\":\"object\",\"type\":\"ChatHistory\",\"relationName\":\"ChatHistoryToUser\"}],\"dbName\":null},\"Employee\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"EmployeeToUser\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"EmployeeToOrganization\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dateOfBirth\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"gender\",\"kind\":\"enum\",\"type\":\"Gender\"},{\"name\":\"maritalStatus\",\"kind\":\"enum\",\"type\":\"MaritalStatus\"},{\"name\":\"departmentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"department\",\"kind\":\"object\",\"type\":\"Department\",\"relationName\":\"DepartmentToEmployee\"},{\"name\":\"positionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"position\",\"kind\":\"object\",\"type\":\"Position\",\"relationName\":\"EmployeeToPosition\"},{\"name\":\"managerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"manager\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"ManagerEmployee\"},{\"name\":\"subordinates\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"ManagerEmployee\"},{\"name\":\"hireDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employmentType\",\"kind\":\"enum\",\"type\":\"EmploymentType\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"EmployeeStatus\"},{\"name\":\"baseSalary\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"attendances\",\"kind\":\"object\",\"type\":\"Attendance\",\"relationName\":\"AttendanceToEmployee\"},{\"name\":\"permissionRequests\",\"kind\":\"object\",\"type\":\"PermissionRequest\",\"relationName\":\"EmployeeToPermissionRequest\"},{\"name\":\"payrolls\",\"kind\":\"object\",\"type\":\"Payroll\",\"relationName\":\"EmployeeToPayroll\"},{\"name\":\"allowances\",\"kind\":\"object\",\"type\":\"EmployeeAllowance\",\"relationName\":\"EmployeeToEmployeeAllowance\"},{\"name\":\"employeeShifts\",\"kind\":\"object\",\"type\":\"EmployeeShift\",\"relationName\":\"EmployeeToEmployeeShift\"}],\"dbName\":null},\"Department\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"DepartmentToOrganization\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employees\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"DepartmentToEmployee\"},{\"name\":\"positions\",\"kind\":\"object\",\"type\":\"Position\",\"relationName\":\"DepartmentToPosition\"}],\"dbName\":null},\"Position\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToPosition\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"departmentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"baseSalary\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"shiftPresenceType\",\"kind\":\"enum\",\"type\":\"ShiftPresenceType\"},{\"name\":\"locationPresenceType\",\"kind\":\"enum\",\"type\":\"LocationPresenceType\"},{\"name\":\"department\",\"kind\":\"object\",\"type\":\"Department\",\"relationName\":\"DepartmentToPosition\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employees\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToPosition\"}],\"dbName\":null},\"Shift\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToShift\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startTime\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"endTime\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employeeShifts\",\"kind\":\"object\",\"type\":\"EmployeeShift\",\"relationName\":\"EmployeeShiftToShift\"}],\"dbName\":null},\"AttendanceType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"AttendanceTypeToOrganization\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isMustPresence\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employeeShifts\",\"kind\":\"object\",\"type\":\"EmployeeShift\",\"relationName\":\"AttendanceTypeToEmployeeShift\"},{\"name\":\"permissionRequests\",\"kind\":\"object\",\"type\":\"PermissionRequest\",\"relationName\":\"AttendanceTypeToPermissionRequest\"}],\"dbName\":null},\"EmployeeShift\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToEmployeeShift\"},{\"name\":\"attendanceTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attendanceType\",\"kind\":\"object\",\"type\":\"AttendanceType\",\"relationName\":\"AttendanceTypeToEmployeeShift\"},{\"name\":\"shiftId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shift\",\"kind\":\"object\",\"type\":\"Shift\",\"relationName\":\"EmployeeShiftToShift\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Attendance\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"AttendanceToOrganization\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"AttendanceToEmployee\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"checkIn\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"checkOut\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"checkInPhoto\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"checkOutPhoto\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"checkInNotes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"checkOutNotes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"checkInLat\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"checkInLng\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"checkOutLat\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"checkOutLng\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"AttendanceStatus\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"PermissionRequest\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToPermissionRequest\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToPermissionRequest\"},{\"name\":\"attendanceTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attendanceType\",\"kind\":\"object\",\"type\":\"AttendanceType\",\"relationName\":\"AttendanceTypeToPermissionRequest\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PermissionStatus\"},{\"name\":\"approvedById\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"approvedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"rejectedReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Payroll\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"OrganizationToPayroll\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToPayroll\"},{\"name\":\"period\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"baseSalary\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"totalAllowance\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"totalDeduction\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"netSalary\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PayrollStatus\"},{\"name\":\"paidAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"AllowanceType\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"AllowanceTypeToOrganization\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"isFixed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"employeeAllowances\",\"kind\":\"object\",\"type\":\"EmployeeAllowance\",\"relationName\":\"AllowanceTypeToEmployeeAllowance\"}],\"dbName\":null},\"EmployeeAllowance\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employeeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"employee\",\"kind\":\"object\",\"type\":\"Employee\",\"relationName\":\"EmployeeToEmployeeAllowance\"},{\"name\":\"allowanceTypeId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"allowanceType\",\"kind\":\"object\",\"type\":\"AllowanceType\",\"relationName\":\"AllowanceTypeToEmployeeAllowance\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Notification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"NotificationToUser\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"NotificationType\"},{\"name\":\"isRead\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"link\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"DocumentEmbedding\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"DocumentEmbeddingToOrganization\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ChatHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ChatHistoryToUser\"},{\"name\":\"organizationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organization\",\"kind\":\"object\",\"type\":\"Organization\",\"relationName\":\"ChatHistoryToOrganization\"},{\"name\":\"question\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"answer\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"context\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -58,8 +58,8 @@ export interface PrismaClientConstructor {
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Todos
-   * const todos = await prisma.todo.findMany()
+   * // Fetch zero or more Organizations
+   * const organizations = await prisma.organization.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -80,8 +80,8 @@ export interface PrismaClientConstructor {
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Todos
- * const todos = await prisma.todo.findMany()
+ * // Fetch zero or more Organizations
+ * const organizations = await prisma.organization.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -175,14 +175,194 @@ export interface PrismaClient<
   }>>
 
       /**
-   * `prisma.todo`: Exposes CRUD operations for the **Todo** model.
+   * `prisma.organization`: Exposes CRUD operations for the **Organization** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Todos
-    * const todos = await prisma.todo.findMany()
+    * // Fetch zero or more Organizations
+    * const organizations = await prisma.organization.findMany()
     * ```
     */
-  get todo(): Prisma.TodoDelegate<ExtArgs, { omit: OmitOpts }>;
+  get organization(): Prisma.OrganizationDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.session`: Exposes CRUD operations for the **Session** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sessions
+    * const sessions = await prisma.session.findMany()
+    * ```
+    */
+  get session(): Prisma.SessionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.account`: Exposes CRUD operations for the **Account** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Accounts
+    * const accounts = await prisma.account.findMany()
+    * ```
+    */
+  get account(): Prisma.AccountDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.verification`: Exposes CRUD operations for the **Verification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Verifications
+    * const verifications = await prisma.verification.findMany()
+    * ```
+    */
+  get verification(): Prisma.VerificationDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.employee`: Exposes CRUD operations for the **Employee** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Employees
+    * const employees = await prisma.employee.findMany()
+    * ```
+    */
+  get employee(): Prisma.EmployeeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.department`: Exposes CRUD operations for the **Department** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Departments
+    * const departments = await prisma.department.findMany()
+    * ```
+    */
+  get department(): Prisma.DepartmentDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.position`: Exposes CRUD operations for the **Position** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Positions
+    * const positions = await prisma.position.findMany()
+    * ```
+    */
+  get position(): Prisma.PositionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.shift`: Exposes CRUD operations for the **Shift** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Shifts
+    * const shifts = await prisma.shift.findMany()
+    * ```
+    */
+  get shift(): Prisma.ShiftDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.attendanceType`: Exposes CRUD operations for the **AttendanceType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AttendanceTypes
+    * const attendanceTypes = await prisma.attendanceType.findMany()
+    * ```
+    */
+  get attendanceType(): Prisma.AttendanceTypeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.employeeShift`: Exposes CRUD operations for the **EmployeeShift** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeShifts
+    * const employeeShifts = await prisma.employeeShift.findMany()
+    * ```
+    */
+  get employeeShift(): Prisma.EmployeeShiftDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.attendance`: Exposes CRUD operations for the **Attendance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Attendances
+    * const attendances = await prisma.attendance.findMany()
+    * ```
+    */
+  get attendance(): Prisma.AttendanceDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.permissionRequest`: Exposes CRUD operations for the **PermissionRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PermissionRequests
+    * const permissionRequests = await prisma.permissionRequest.findMany()
+    * ```
+    */
+  get permissionRequest(): Prisma.PermissionRequestDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.payroll`: Exposes CRUD operations for the **Payroll** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Payrolls
+    * const payrolls = await prisma.payroll.findMany()
+    * ```
+    */
+  get payroll(): Prisma.PayrollDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.allowanceType`: Exposes CRUD operations for the **AllowanceType** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AllowanceTypes
+    * const allowanceTypes = await prisma.allowanceType.findMany()
+    * ```
+    */
+  get allowanceType(): Prisma.AllowanceTypeDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.employeeAllowance`: Exposes CRUD operations for the **EmployeeAllowance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmployeeAllowances
+    * const employeeAllowances = await prisma.employeeAllowance.findMany()
+    * ```
+    */
+  get employeeAllowance(): Prisma.EmployeeAllowanceDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.documentEmbedding`: Exposes CRUD operations for the **DocumentEmbedding** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DocumentEmbeddings
+    * const documentEmbeddings = await prisma.documentEmbedding.findMany()
+    * ```
+    */
+  get documentEmbedding(): Prisma.DocumentEmbeddingDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.chatHistory`: Exposes CRUD operations for the **ChatHistory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ChatHistories
+    * const chatHistories = await prisma.chatHistory.findMany()
+    * ```
+    */
+  get chatHistory(): Prisma.ChatHistoryDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

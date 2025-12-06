@@ -9,7 +9,107 @@
 * 🟢 You can import this file directly.
 */
 
+export const Role = {
+  ADMIN: 'ADMIN',
+  HR_MANAGER: 'HR_MANAGER',
+  MANAGER: 'MANAGER',
+  EMPLOYEE: 'EMPLOYEE'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const Gender = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE'
+} as const
+
+export type Gender = (typeof Gender)[keyof typeof Gender]
+
+
+export const MaritalStatus = {
+  SINGLE: 'SINGLE',
+  MARRIED: 'MARRIED',
+  DIVORCED: 'DIVORCED',
+  WIDOWED: 'WIDOWED'
+} as const
+
+export type MaritalStatus = (typeof MaritalStatus)[keyof typeof MaritalStatus]
+
+
+export const EmploymentType = {
+  FULL_TIME: 'FULL_TIME',
+  PART_TIME: 'PART_TIME',
+  CONTRACT: 'CONTRACT',
+  INTERN: 'INTERN'
+} as const
+
+export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const EmployeeStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type EmployeeStatus = (typeof EmployeeStatus)[keyof typeof EmployeeStatus]
+
+
+export const ShiftPresenceType = {
+  FIXED: 'FIXED',
+  FLEXIBLE: 'FLEXIBLE'
+} as const
+
+export type ShiftPresenceType = (typeof ShiftPresenceType)[keyof typeof ShiftPresenceType]
+
+
+export const LocationPresenceType = {
+  FIXED: 'FIXED',
+  FLEXIBLE: 'FLEXIBLE'
+} as const
+
+export type LocationPresenceType = (typeof LocationPresenceType)[keyof typeof LocationPresenceType]
+
+
+export const AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  HALF_DAY: 'HALF_DAY',
+  ON_LEAVE: 'ON_LEAVE'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const PermissionStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PermissionStatus = (typeof PermissionStatus)[keyof typeof PermissionStatus]
+
+
+export const PayrollStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PayrollStatus = (typeof PayrollStatus)[keyof typeof PayrollStatus]
+
+
+export const NotificationType = {
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+  LEAVE_REQUEST: 'LEAVE_REQUEST',
+  PAYROLL: 'PAYROLL',
+  ATTENDANCE: 'ATTENDANCE'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

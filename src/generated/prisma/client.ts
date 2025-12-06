@@ -29,8 +29,8 @@ export * from "./enums.ts"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Todos
- * const todos = await prisma.todo.findMany()
+ * // Fetch zero or more Organizations
+ * const organizations = await prisma.organization.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -40,7 +40,97 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model Todo
+ * Model Organization
  * 
  */
-export type Todo = Prisma.TodoModel
+export type Organization = Prisma.OrganizationModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model Employee
+ * 
+ */
+export type Employee = Prisma.EmployeeModel
+/**
+ * Model Department
+ * 
+ */
+export type Department = Prisma.DepartmentModel
+/**
+ * Model Position
+ * 
+ */
+export type Position = Prisma.PositionModel
+/**
+ * Model Shift
+ * 
+ */
+export type Shift = Prisma.ShiftModel
+/**
+ * Model AttendanceType
+ * 
+ */
+export type AttendanceType = Prisma.AttendanceTypeModel
+/**
+ * Model EmployeeShift
+ * 
+ */
+export type EmployeeShift = Prisma.EmployeeShiftModel
+/**
+ * Model Attendance
+ * 
+ */
+export type Attendance = Prisma.AttendanceModel
+/**
+ * Model PermissionRequest
+ * 
+ */
+export type PermissionRequest = Prisma.PermissionRequestModel
+/**
+ * Model Payroll
+ * 
+ */
+export type Payroll = Prisma.PayrollModel
+/**
+ * Model AllowanceType
+ * 
+ */
+export type AllowanceType = Prisma.AllowanceTypeModel
+/**
+ * Model EmployeeAllowance
+ * 
+ */
+export type EmployeeAllowance = Prisma.EmployeeAllowanceModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model DocumentEmbedding
+ * 
+ */
+export type DocumentEmbedding = Prisma.DocumentEmbeddingModel
+/**
+ * Model ChatHistory
+ * 
+ */
+export type ChatHistory = Prisma.ChatHistoryModel
