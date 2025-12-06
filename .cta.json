@@ -1,0 +1,26 @@
+{
+  "projectName": "neuro-person",
+  "mode": "file-router",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "addOnOptions": {
+    "prisma": {
+      "database": "postgres"
+    }
+  },
+  "git": true,
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": [
+    "eslint",
+    "nitro",
+    "start",
+    "tRPC",
+    "table",
+    "t3env",
+    "shadcn",
+    "prisma",
+    "tanstack-query"
+  ]
+}
