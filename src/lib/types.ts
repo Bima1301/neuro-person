@@ -1,13 +1,12 @@
 export type PaginatedResponse<T> = {
-	items: T[];
-	total: number;
-	page: number;
-	perPage: number;
-	totalPages: number;
-};
+  items: Array<T>
+  total: number
+  page: number
+  perPage: number
+  totalPages: number
+}
 
 export type InfiniteResult<T> = {
-	items: T[];
-	nextCursor: string | undefined;
-};
-
+  items: Array<T>
+  nextCursor: string | undefined
+}

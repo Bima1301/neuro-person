@@ -18,6 +18,12 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  ssr: {
+    noExternal: ['xlsx']
+  },
+  optimizeDeps: {
+    include: ['xlsx']
+  }
 })
 
 export default config

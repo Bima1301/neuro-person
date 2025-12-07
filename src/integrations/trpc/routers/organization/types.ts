@@ -1,4 +1,3 @@
-import { Prisma } from "@/generated/prisma/client";
+import type { Prisma } from '@/generated/prisma/client'
 
-export type OrganizationDetail = Prisma.OrganizationGetPayload<{}>;
-
+export type OrganizationDetail = Prisma.OrganizationGetPayload<{}>

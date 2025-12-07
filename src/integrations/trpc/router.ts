@@ -6,6 +6,13 @@ import { organizationRouter } from "./routers/organization";
 import { positionRouter } from "./routers/position";
 import { shiftRouter } from "./routers/shift";
 import { uploadRouter } from "./routers/upload";
+import { employeeRouter } from "./routers/employee";
+import { shiftAllocationRouter } from "./routers/shift-allocation";
+import { attendanceRouter } from "./routers/attendance";
+import { permissionRouter } from "./routers/permission";
+import { payrollRouter } from "./routers/payroll";
+import { leaveRouter } from "./routers/leave";
+import { chatRouter } from "./routers/chat-bot";
 
 export const trpcRouter = createTRPCRouter({
   upload: uploadRouter,
@@ -17,6 +24,15 @@ export const trpcRouter = createTRPCRouter({
   position: positionRouter,
   shift: shiftRouter,
   attendanceType: attendanceTypeRouter,
+
+  //MAIN MENU
+  employee: employeeRouter,
+  shiftAllocation: shiftAllocationRouter,
+  attendance: attendanceRouter,
+  permission: permissionRouter,
+  payroll: payrollRouter,
+  leave: leaveRouter,
+  chatBot: chatRouter
 });
 
 export type TRPCRouter = typeof trpcRouter;

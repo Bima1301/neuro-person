@@ -179,6 +179,7 @@ export const EmployeeScalarFieldEnum = {
   phone: 'phone',
   address: 'address',
   city: 'city',
+  avatar: 'avatar',
   dateOfBirth: 'dateOfBirth',
   gender: 'gender',
   maritalStatus: 'maritalStatus',

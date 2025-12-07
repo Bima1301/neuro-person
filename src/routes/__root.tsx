@@ -1,38 +1,38 @@
-import type { QueryClient } from "@tanstack/react-query";
 import {
-  createRootRouteWithContext,
   HeadContent,
   Link,
   Outlet,
   Scripts,
-} from "@tanstack/react-router";
-import type { TRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { Toaster } from "@/components/ui/sonner";
-import type { TRPCRouter } from "@/integrations/trpc/router";
-import appCss from "../styles.css?url";
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
+import appCss from '../styles.css?url'
+import type { QueryClient } from '@tanstack/react-query'
+import type { TRPCOptionsProxy } from '@trpc/tanstack-react-query'
+import type { TRPCRouter } from '@/integrations/trpc/router'
+import { Toaster } from '@/components/ui/sonner'
 
 interface MyRouterContext {
-  queryClient: QueryClient;
-  trpc: TRPCOptionsProxy<TRPCRouter>;
+  queryClient: QueryClient
+  trpc: TRPCOptionsProxy<TRPCRouter>
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: 'utf-8',
       },
       {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
       },
       {
-        title: "Super Track",
+        title: 'NeuroPerson',
       },
     ],
     links: [
       {
-        rel: "stylesheet",
+        rel: 'stylesheet',
         href: appCss,
       },
     ],
@@ -40,7 +40,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   component: RootDocument,
   notFoundComponent: NotFoundPage,
-});
+})
 
 function RootDocument() {
   return (
@@ -54,7 +54,7 @@ function RootDocument() {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 function NotFoundPage() {
@@ -73,5 +73,5 @@ function NotFoundPage() {
         </Link>
       </div>
     </div>
-  );
+  )
 }

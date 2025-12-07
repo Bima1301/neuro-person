@@ -12,14 +12,30 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as EmployeeSignInRouteImport } from './routes/employee-sign-in'
+import { Route as EmployeeRouteImport } from './routes/employee'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmployeeIndexRouteImport } from './routes/employee/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as SessionSplatRouteImport } from './routes/session/$'
+import { Route as EmployeeReportRouteImport } from './routes/employee/report'
+import { Route as EmployeeProfileRouteImport } from './routes/employee/profile'
+import { Route as EmployeePermissionRouteImport } from './routes/employee/permission'
+import { Route as EmployeeAttendanceRouteImport } from './routes/employee/attendance'
 import { Route as AppShiftsRouteImport } from './routes/app/shifts'
+import { Route as AppShiftAllocationRouteImport } from './routes/app/shift-allocation'
 import { Route as AppPositionsRouteImport } from './routes/app/positions'
+import { Route as AppPermissionRouteImport } from './routes/app/permission'
+import { Route as AppPayrollRouteImport } from './routes/app/payroll'
+import { Route as AppLeaveRouteImport } from './routes/app/leave'
+import { Route as AppEmployeesRouteImport } from './routes/app/employees'
 import { Route as AppDepartmentsRouteImport } from './routes/app/departments'
+import { Route as AppChatbotRouteImport } from './routes/app/chatbot'
 import { Route as AppAttendanceTypesRouteImport } from './routes/app/attendance-types'
+import { Route as AppAttendanceRouteImport } from './routes/app/attendance'
+import { Route as EmployeeCicoIndexRouteImport } from './routes/employee/cico/index'
+import { Route as EmployeeCicoTypeRouteImport } from './routes/employee/cico/$type'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -38,6 +54,16 @@ const OnboardingRoute = OnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeSignInRoute = EmployeeSignInRouteImport.update({
+  id: '/employee-sign-in',
+  path: '/employee-sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeRoute = EmployeeRouteImport.update({
+  id: '/employee',
+  path: '/employee',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -47,6 +73,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeIndexRoute = EmployeeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EmployeeRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -58,9 +89,34 @@ const SessionSplatRoute = SessionSplatRouteImport.update({
   path: '/session/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeReportRoute = EmployeeReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => EmployeeRoute,
+} as any)
+const EmployeeProfileRoute = EmployeeProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => EmployeeRoute,
+} as any)
+const EmployeePermissionRoute = EmployeePermissionRouteImport.update({
+  id: '/permission',
+  path: '/permission',
+  getParentRoute: () => EmployeeRoute,
+} as any)
+const EmployeeAttendanceRoute = EmployeeAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => EmployeeRoute,
+} as any)
 const AppShiftsRoute = AppShiftsRouteImport.update({
   id: '/shifts',
   path: '/shifts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppShiftAllocationRoute = AppShiftAllocationRouteImport.update({
+  id: '/shift-allocation',
+  path: '/shift-allocation',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPositionsRoute = AppPositionsRouteImport.update({
@@ -68,15 +124,55 @@ const AppPositionsRoute = AppPositionsRouteImport.update({
   path: '/positions',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPermissionRoute = AppPermissionRouteImport.update({
+  id: '/permission',
+  path: '/permission',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPayrollRoute = AppPayrollRouteImport.update({
+  id: '/payroll',
+  path: '/payroll',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLeaveRoute = AppLeaveRouteImport.update({
+  id: '/leave',
+  path: '/leave',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEmployeesRoute = AppEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDepartmentsRoute = AppDepartmentsRouteImport.update({
   id: '/departments',
   path: '/departments',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppChatbotRoute = AppChatbotRouteImport.update({
+  id: '/chatbot',
+  path: '/chatbot',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAttendanceTypesRoute = AppAttendanceTypesRouteImport.update({
   id: '/attendance-types',
   path: '/attendance-types',
   getParentRoute: () => AppRoute,
+} as any)
+const AppAttendanceRoute = AppAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AppRoute,
+} as any)
+const EmployeeCicoIndexRoute = EmployeeCicoIndexRouteImport.update({
+  id: '/cico/',
+  path: '/cico/',
+  getParentRoute: () => EmployeeRoute,
+} as any)
+const EmployeeCicoTypeRoute = EmployeeCicoTypeRouteImport.update({
+  id: '/cico/$type',
+  path: '/cico/$type',
+  getParentRoute: () => EmployeeRoute,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
@@ -92,98 +188,194 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/employee': typeof EmployeeRouteWithChildren
+  '/employee-sign-in': typeof EmployeeSignInRoute
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance': typeof AppAttendanceRoute
   '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/chatbot': typeof AppChatbotRoute
   '/app/departments': typeof AppDepartmentsRoute
+  '/app/employees': typeof AppEmployeesRoute
+  '/app/leave': typeof AppLeaveRoute
+  '/app/payroll': typeof AppPayrollRoute
+  '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
+  '/employee/attendance': typeof EmployeeAttendanceRoute
+  '/employee/permission': typeof EmployeePermissionRoute
+  '/employee/profile': typeof EmployeeProfileRoute
+  '/employee/report': typeof EmployeeReportRoute
   '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
+  '/employee/': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/employee/cico/$type': typeof EmployeeCicoTypeRoute
+  '/employee/cico': typeof EmployeeCicoIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/employee-sign-in': typeof EmployeeSignInRoute
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance': typeof AppAttendanceRoute
   '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/chatbot': typeof AppChatbotRoute
   '/app/departments': typeof AppDepartmentsRoute
+  '/app/employees': typeof AppEmployeesRoute
+  '/app/leave': typeof AppLeaveRoute
+  '/app/payroll': typeof AppPayrollRoute
+  '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
+  '/employee/attendance': typeof EmployeeAttendanceRoute
+  '/employee/permission': typeof EmployeePermissionRoute
+  '/employee/profile': typeof EmployeeProfileRoute
+  '/employee/report': typeof EmployeeReportRoute
   '/session/$': typeof SessionSplatRoute
   '/app': typeof AppIndexRoute
+  '/employee': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/employee/cico/$type': typeof EmployeeCicoTypeRoute
+  '/employee/cico': typeof EmployeeCicoIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/employee': typeof EmployeeRouteWithChildren
+  '/employee-sign-in': typeof EmployeeSignInRoute
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance': typeof AppAttendanceRoute
   '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/chatbot': typeof AppChatbotRoute
   '/app/departments': typeof AppDepartmentsRoute
+  '/app/employees': typeof AppEmployeesRoute
+  '/app/leave': typeof AppLeaveRoute
+  '/app/payroll': typeof AppPayrollRoute
+  '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
+  '/employee/attendance': typeof EmployeeAttendanceRoute
+  '/employee/permission': typeof EmployeePermissionRoute
+  '/employee/profile': typeof EmployeeProfileRoute
+  '/employee/report': typeof EmployeeReportRoute
   '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
+  '/employee/': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/employee/cico/$type': typeof EmployeeCicoTypeRoute
+  '/employee/cico/': typeof EmployeeCicoIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/app'
+    | '/employee'
+    | '/employee-sign-in'
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance'
     | '/app/attendance-types'
+    | '/app/chatbot'
     | '/app/departments'
+    | '/app/employees'
+    | '/app/leave'
+    | '/app/payroll'
+    | '/app/permission'
     | '/app/positions'
+    | '/app/shift-allocation'
     | '/app/shifts'
+    | '/employee/attendance'
+    | '/employee/permission'
+    | '/employee/profile'
+    | '/employee/report'
     | '/session/$'
     | '/app/'
+    | '/employee/'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/employee/cico/$type'
+    | '/employee/cico'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/employee-sign-in'
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance'
     | '/app/attendance-types'
+    | '/app/chatbot'
     | '/app/departments'
+    | '/app/employees'
+    | '/app/leave'
+    | '/app/payroll'
+    | '/app/permission'
     | '/app/positions'
+    | '/app/shift-allocation'
     | '/app/shifts'
+    | '/employee/attendance'
+    | '/employee/permission'
+    | '/employee/profile'
+    | '/employee/report'
     | '/session/$'
     | '/app'
+    | '/employee'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/employee/cico/$type'
+    | '/employee/cico'
   id:
     | '__root__'
     | '/'
     | '/app'
+    | '/employee'
+    | '/employee-sign-in'
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance'
     | '/app/attendance-types'
+    | '/app/chatbot'
     | '/app/departments'
+    | '/app/employees'
+    | '/app/leave'
+    | '/app/payroll'
+    | '/app/permission'
     | '/app/positions'
+    | '/app/shift-allocation'
     | '/app/shifts'
+    | '/employee/attendance'
+    | '/employee/permission'
+    | '/employee/profile'
+    | '/employee/report'
     | '/session/$'
     | '/app/'
+    | '/employee/'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/employee/cico/$type'
+    | '/employee/cico/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  EmployeeRoute: typeof EmployeeRouteWithChildren
+  EmployeeSignInRoute: typeof EmployeeSignInRoute
   OnboardingRoute: typeof OnboardingRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
@@ -215,6 +407,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee-sign-in': {
+      id: '/employee-sign-in'
+      path: '/employee-sign-in'
+      fullPath: '/employee-sign-in'
+      preLoaderRoute: typeof EmployeeSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee': {
+      id: '/employee'
+      path: '/employee'
+      fullPath: '/employee'
+      preLoaderRoute: typeof EmployeeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -228,6 +434,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/employee/': {
+      id: '/employee/'
+      path: '/'
+      fullPath: '/employee/'
+      preLoaderRoute: typeof EmployeeIndexRouteImport
+      parentRoute: typeof EmployeeRoute
     }
     '/app/': {
       id: '/app/'
@@ -243,11 +456,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SessionSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/report': {
+      id: '/employee/report'
+      path: '/report'
+      fullPath: '/employee/report'
+      preLoaderRoute: typeof EmployeeReportRouteImport
+      parentRoute: typeof EmployeeRoute
+    }
+    '/employee/profile': {
+      id: '/employee/profile'
+      path: '/profile'
+      fullPath: '/employee/profile'
+      preLoaderRoute: typeof EmployeeProfileRouteImport
+      parentRoute: typeof EmployeeRoute
+    }
+    '/employee/permission': {
+      id: '/employee/permission'
+      path: '/permission'
+      fullPath: '/employee/permission'
+      preLoaderRoute: typeof EmployeePermissionRouteImport
+      parentRoute: typeof EmployeeRoute
+    }
+    '/employee/attendance': {
+      id: '/employee/attendance'
+      path: '/attendance'
+      fullPath: '/employee/attendance'
+      preLoaderRoute: typeof EmployeeAttendanceRouteImport
+      parentRoute: typeof EmployeeRoute
+    }
     '/app/shifts': {
       id: '/app/shifts'
       path: '/shifts'
       fullPath: '/app/shifts'
       preLoaderRoute: typeof AppShiftsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/shift-allocation': {
+      id: '/app/shift-allocation'
+      path: '/shift-allocation'
+      fullPath: '/app/shift-allocation'
+      preLoaderRoute: typeof AppShiftAllocationRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/positions': {
@@ -257,11 +505,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPositionsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/permission': {
+      id: '/app/permission'
+      path: '/permission'
+      fullPath: '/app/permission'
+      preLoaderRoute: typeof AppPermissionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/payroll': {
+      id: '/app/payroll'
+      path: '/payroll'
+      fullPath: '/app/payroll'
+      preLoaderRoute: typeof AppPayrollRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/leave': {
+      id: '/app/leave'
+      path: '/leave'
+      fullPath: '/app/leave'
+      preLoaderRoute: typeof AppLeaveRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/employees': {
+      id: '/app/employees'
+      path: '/employees'
+      fullPath: '/app/employees'
+      preLoaderRoute: typeof AppEmployeesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/departments': {
       id: '/app/departments'
       path: '/departments'
       fullPath: '/app/departments'
       preLoaderRoute: typeof AppDepartmentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/chatbot': {
+      id: '/app/chatbot'
+      path: '/chatbot'
+      fullPath: '/app/chatbot'
+      preLoaderRoute: typeof AppChatbotRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/attendance-types': {
@@ -270,6 +553,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/attendance-types'
       preLoaderRoute: typeof AppAttendanceTypesRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/attendance': {
+      id: '/app/attendance'
+      path: '/attendance'
+      fullPath: '/app/attendance'
+      preLoaderRoute: typeof AppAttendanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/employee/cico/': {
+      id: '/employee/cico/'
+      path: '/cico'
+      fullPath: '/employee/cico'
+      preLoaderRoute: typeof EmployeeCicoIndexRouteImport
+      parentRoute: typeof EmployeeRoute
+    }
+    '/employee/cico/$type': {
+      id: '/employee/cico/$type'
+      path: '/cico/$type'
+      fullPath: '/employee/cico/$type'
+      preLoaderRoute: typeof EmployeeCicoTypeRouteImport
+      parentRoute: typeof EmployeeRoute
     }
     '/api/trpc/$': {
       id: '/api/trpc/$'
@@ -289,26 +593,66 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAttendanceRoute: typeof AppAttendanceRoute
   AppAttendanceTypesRoute: typeof AppAttendanceTypesRoute
+  AppChatbotRoute: typeof AppChatbotRoute
   AppDepartmentsRoute: typeof AppDepartmentsRoute
+  AppEmployeesRoute: typeof AppEmployeesRoute
+  AppLeaveRoute: typeof AppLeaveRoute
+  AppPayrollRoute: typeof AppPayrollRoute
+  AppPermissionRoute: typeof AppPermissionRoute
   AppPositionsRoute: typeof AppPositionsRoute
+  AppShiftAllocationRoute: typeof AppShiftAllocationRoute
   AppShiftsRoute: typeof AppShiftsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAttendanceRoute: AppAttendanceRoute,
   AppAttendanceTypesRoute: AppAttendanceTypesRoute,
+  AppChatbotRoute: AppChatbotRoute,
   AppDepartmentsRoute: AppDepartmentsRoute,
+  AppEmployeesRoute: AppEmployeesRoute,
+  AppLeaveRoute: AppLeaveRoute,
+  AppPayrollRoute: AppPayrollRoute,
+  AppPermissionRoute: AppPermissionRoute,
   AppPositionsRoute: AppPositionsRoute,
+  AppShiftAllocationRoute: AppShiftAllocationRoute,
   AppShiftsRoute: AppShiftsRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface EmployeeRouteChildren {
+  EmployeeAttendanceRoute: typeof EmployeeAttendanceRoute
+  EmployeePermissionRoute: typeof EmployeePermissionRoute
+  EmployeeProfileRoute: typeof EmployeeProfileRoute
+  EmployeeReportRoute: typeof EmployeeReportRoute
+  EmployeeIndexRoute: typeof EmployeeIndexRoute
+  EmployeeCicoTypeRoute: typeof EmployeeCicoTypeRoute
+  EmployeeCicoIndexRoute: typeof EmployeeCicoIndexRoute
+}
+
+const EmployeeRouteChildren: EmployeeRouteChildren = {
+  EmployeeAttendanceRoute: EmployeeAttendanceRoute,
+  EmployeePermissionRoute: EmployeePermissionRoute,
+  EmployeeProfileRoute: EmployeeProfileRoute,
+  EmployeeReportRoute: EmployeeReportRoute,
+  EmployeeIndexRoute: EmployeeIndexRoute,
+  EmployeeCicoTypeRoute: EmployeeCicoTypeRoute,
+  EmployeeCicoIndexRoute: EmployeeCicoIndexRoute,
+}
+
+const EmployeeRouteWithChildren = EmployeeRoute._addFileChildren(
+  EmployeeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  EmployeeRoute: EmployeeRouteWithChildren,
+  EmployeeSignInRoute: EmployeeSignInRoute,
   OnboardingRoute: OnboardingRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,

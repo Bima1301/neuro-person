@@ -1,9 +1,9 @@
 interface CircleLoaderProps {
-  size?: number;
-  pathColor?: string;
-  dotColor?: string;
-  duration?: number;
-  baseColor?: "default" | "white";
+  size?: number
+  pathColor?: string
+  dotColor?: string
+  duration?: number
+  baseColor?: 'default' | 'white'
 }
 
 export default function CircleLoader({
@@ -11,13 +11,13 @@ export default function CircleLoader({
   pathColor,
   dotColor,
   duration = 3,
-  baseColor = "default",
+  baseColor = 'default',
 }: CircleLoaderProps) {
   // Set colors based on baseColor prop
   const finalPathColor =
-    pathColor || (baseColor === "white" ? "#FFFFFF" : "#2F3545");
+    pathColor || (baseColor === 'white' ? '#FFFFFF' : '#2F3545')
   const finalDotColor =
-    dotColor || (baseColor === "white" ? "#FFFFFF" : "#5628EE");
+    dotColor || (baseColor === 'white' ? '#FFFFFF' : '#5628EE')
   return (
     <>
       <style>{`
@@ -96,5 +96,5 @@ export default function CircleLoader({
         </svg>
       </div>
     </>
-  );
+  )
 }

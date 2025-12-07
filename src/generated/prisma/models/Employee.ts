@@ -46,6 +46,7 @@ export type EmployeeMinAggregateOutputType = {
   phone: string | null
   address: string | null
   city: string | null
+  avatar: string | null
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   maritalStatus: $Enums.MaritalStatus | null
@@ -72,6 +73,7 @@ export type EmployeeMaxAggregateOutputType = {
   phone: string | null
   address: string | null
   city: string | null
+  avatar: string | null
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   maritalStatus: $Enums.MaritalStatus | null
@@ -98,6 +100,7 @@ export type EmployeeCountAggregateOutputType = {
   phone: number
   address: number
   city: number
+  avatar: number
   dateOfBirth: number
   gender: number
   maritalStatus: number
@@ -134,6 +137,7 @@ export type EmployeeMinAggregateInputType = {
   phone?: true
   address?: true
   city?: true
+  avatar?: true
   dateOfBirth?: true
   gender?: true
   maritalStatus?: true
@@ -160,6 +164,7 @@ export type EmployeeMaxAggregateInputType = {
   phone?: true
   address?: true
   city?: true
+  avatar?: true
   dateOfBirth?: true
   gender?: true
   maritalStatus?: true
@@ -186,6 +191,7 @@ export type EmployeeCountAggregateInputType = {
   phone?: true
   address?: true
   city?: true
+  avatar?: true
   dateOfBirth?: true
   gender?: true
   maritalStatus?: true
@@ -299,6 +305,7 @@ export type EmployeeGroupByOutputType = {
   phone: string | null
   address: string | null
   city: string | null
+  avatar: string | null
   dateOfBirth: Date | null
   gender: $Enums.Gender | null
   maritalStatus: $Enums.MaritalStatus | null
@@ -348,6 +355,7 @@ export type EmployeeWhereInput = {
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   address?: Prisma.StringNullableFilter<"Employee"> | string | null
   city?: Prisma.StringNullableFilter<"Employee"> | string | null
+  avatar?: Prisma.StringNullableFilter<"Employee"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"Employee"> | $Enums.Gender | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"Employee"> | $Enums.MaritalStatus | null
@@ -385,6 +393,7 @@ export type EmployeeOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   maritalStatus?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -426,6 +435,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   address?: Prisma.StringNullableFilter<"Employee"> | string | null
   city?: Prisma.StringNullableFilter<"Employee"> | string | null
+  avatar?: Prisma.StringNullableFilter<"Employee"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"Employee"> | $Enums.Gender | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"Employee"> | $Enums.MaritalStatus | null
@@ -463,6 +473,7 @@ export type EmployeeOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   maritalStatus?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -497,6 +508,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   city?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  avatar?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   gender?: Prisma.EnumGenderNullableWithAggregatesFilter<"Employee"> | $Enums.Gender | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableWithAggregatesFilter<"Employee"> | $Enums.MaritalStatus | null
@@ -521,6 +533,7 @@ export type EmployeeCreateInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -555,6 +568,7 @@ export type EmployeeUncheckedCreateInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -585,6 +599,7 @@ export type EmployeeUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -619,6 +634,7 @@ export type EmployeeUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -651,6 +667,7 @@ export type EmployeeCreateManyInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -675,6 +692,7 @@ export type EmployeeUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -698,6 +716,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -744,6 +763,7 @@ export type EmployeeCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
@@ -774,6 +794,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
@@ -800,6 +821,7 @@ export type EmployeeMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   maritalStatus?: Prisma.SortOrder
@@ -1143,6 +1165,7 @@ export type EmployeeCreateWithoutOrganizationInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1175,6 +1198,7 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1236,6 +1260,7 @@ export type EmployeeScalarWhereInput = {
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   address?: Prisma.StringNullableFilter<"Employee"> | string | null
   city?: Prisma.StringNullableFilter<"Employee"> | string | null
+  avatar?: Prisma.StringNullableFilter<"Employee"> | string | null
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   gender?: Prisma.EnumGenderNullableFilter<"Employee"> | $Enums.Gender | null
   maritalStatus?: Prisma.EnumMaritalStatusNullableFilter<"Employee"> | $Enums.MaritalStatus | null
@@ -1260,6 +1285,7 @@ export type EmployeeCreateWithoutUserInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1292,6 +1318,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1338,6 +1365,7 @@ export type EmployeeUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1370,6 +1398,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1400,6 +1429,7 @@ export type EmployeeCreateWithoutSubordinatesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1433,6 +1463,7 @@ export type EmployeeUncheckedCreateWithoutSubordinatesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1467,6 +1498,7 @@ export type EmployeeCreateWithoutManagerInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1500,6 +1532,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1550,6 +1583,7 @@ export type EmployeeUpdateWithoutSubordinatesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1583,6 +1617,7 @@ export type EmployeeUncheckedUpdateWithoutSubordinatesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1628,6 +1663,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1661,6 +1697,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1716,6 +1753,7 @@ export type EmployeeCreateWithoutPositionInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1749,6 +1787,7 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1804,6 +1843,7 @@ export type EmployeeCreateWithoutEmployeeShiftsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1837,6 +1877,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeShiftsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1882,6 +1923,7 @@ export type EmployeeUpdateWithoutEmployeeShiftsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1915,6 +1957,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeShiftsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -1944,6 +1987,7 @@ export type EmployeeCreateWithoutAttendancesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -1977,6 +2021,7 @@ export type EmployeeUncheckedCreateWithoutAttendancesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2022,6 +2067,7 @@ export type EmployeeUpdateWithoutAttendancesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2055,6 +2101,7 @@ export type EmployeeUncheckedUpdateWithoutAttendancesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2084,6 +2131,7 @@ export type EmployeeCreateWithoutPermissionRequestsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2117,6 +2165,7 @@ export type EmployeeUncheckedCreateWithoutPermissionRequestsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2162,6 +2211,7 @@ export type EmployeeUpdateWithoutPermissionRequestsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2195,6 +2245,7 @@ export type EmployeeUncheckedUpdateWithoutPermissionRequestsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2224,6 +2275,7 @@ export type EmployeeCreateWithoutPayrollsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2257,6 +2309,7 @@ export type EmployeeUncheckedCreateWithoutPayrollsInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2302,6 +2355,7 @@ export type EmployeeUpdateWithoutPayrollsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2335,6 +2389,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2364,6 +2419,7 @@ export type EmployeeCreateWithoutAllowancesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2397,6 +2453,7 @@ export type EmployeeUncheckedCreateWithoutAllowancesInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2442,6 +2499,7 @@ export type EmployeeUpdateWithoutAllowancesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2475,6 +2533,7 @@ export type EmployeeUncheckedUpdateWithoutAllowancesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2505,6 +2564,7 @@ export type EmployeeCreateManyOrganizationInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2529,6 +2589,7 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2561,6 +2622,7 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2592,6 +2654,7 @@ export type EmployeeUncheckedUpdateManyWithoutOrganizationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2618,6 +2681,7 @@ export type EmployeeCreateManyManagerInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2641,6 +2705,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2674,6 +2739,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2705,6 +2771,7 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2730,6 +2797,7 @@ export type EmployeeCreateManyDepartmentInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2753,6 +2821,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2786,6 +2855,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2817,6 +2887,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2842,6 +2913,7 @@ export type EmployeeCreateManyPositionInput = {
   phone?: string | null
   address?: string | null
   city?: string | null
+  avatar?: string | null
   dateOfBirth?: Date | string | null
   gender?: $Enums.Gender | null
   maritalStatus?: $Enums.MaritalStatus | null
@@ -2865,6 +2937,7 @@ export type EmployeeUpdateWithoutPositionInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2898,6 +2971,7 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -2929,6 +3003,7 @@ export type EmployeeUncheckedUpdateManyWithoutPositionInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
   maritalStatus?: Prisma.NullableEnumMaritalStatusFieldUpdateOperationsInput | $Enums.MaritalStatus | null
@@ -3030,6 +3105,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   phone?: boolean
   address?: boolean
   city?: boolean
+  avatar?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   maritalStatus?: boolean
@@ -3068,6 +3144,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   phone?: boolean
   address?: boolean
   city?: boolean
+  avatar?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   maritalStatus?: boolean
@@ -3099,6 +3176,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   phone?: boolean
   address?: boolean
   city?: boolean
+  avatar?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   maritalStatus?: boolean
@@ -3130,6 +3208,7 @@ export type EmployeeSelectScalar = {
   phone?: boolean
   address?: boolean
   city?: boolean
+  avatar?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   maritalStatus?: boolean
@@ -3144,7 +3223,7 @@ export type EmployeeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "organizationId" | "employeeId" | "username" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "dateOfBirth" | "gender" | "maritalStatus" | "departmentId" | "positionId" | "managerId" | "hireDate" | "employmentType" | "status" | "baseSalary" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "organizationId" | "employeeId" | "username" | "firstName" | "lastName" | "email" | "phone" | "address" | "city" | "avatar" | "dateOfBirth" | "gender" | "maritalStatus" | "departmentId" | "positionId" | "managerId" | "hireDate" | "employmentType" | "status" | "baseSalary" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -3201,6 +3280,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     phone: string | null
     address: string | null
     city: string | null
+    avatar: string | null
     dateOfBirth: Date | null
     gender: $Enums.Gender | null
     maritalStatus: $Enums.MaritalStatus | null
@@ -3658,6 +3738,7 @@ export interface EmployeeFieldRefs {
   readonly phone: Prisma.FieldRef<"Employee", 'String'>
   readonly address: Prisma.FieldRef<"Employee", 'String'>
   readonly city: Prisma.FieldRef<"Employee", 'String'>
+  readonly avatar: Prisma.FieldRef<"Employee", 'String'>
   readonly dateOfBirth: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly gender: Prisma.FieldRef<"Employee", 'Gender'>
   readonly maritalStatus: Prisma.FieldRef<"Employee", 'MaritalStatus'>
