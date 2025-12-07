@@ -16,6 +16,10 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as SessionSplatRouteImport } from './routes/session/$'
+import { Route as AppShiftsRouteImport } from './routes/app/shifts'
+import { Route as AppPositionsRouteImport } from './routes/app/positions'
+import { Route as AppDepartmentsRouteImport } from './routes/app/departments'
+import { Route as AppAttendanceTypesRouteImport } from './routes/app/attendance-types'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -54,6 +58,26 @@ const SessionSplatRoute = SessionSplatRouteImport.update({
   path: '/session/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppShiftsRoute = AppShiftsRouteImport.update({
+  id: '/shifts',
+  path: '/shifts',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPositionsRoute = AppPositionsRouteImport.update({
+  id: '/positions',
+  path: '/positions',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDepartmentsRoute = AppDepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAttendanceTypesRoute = AppAttendanceTypesRouteImport.update({
+  id: '/attendance-types',
+  path: '/attendance-types',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -71,6 +95,10 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/departments': typeof AppDepartmentsRoute
+  '/app/positions': typeof AppPositionsRoute
+  '/app/shifts': typeof AppShiftsRoute
   '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -81,6 +109,10 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/departments': typeof AppDepartmentsRoute
+  '/app/positions': typeof AppPositionsRoute
+  '/app/shifts': typeof AppShiftsRoute
   '/session/$': typeof SessionSplatRoute
   '/app': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -93,6 +125,10 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/app/attendance-types': typeof AppAttendanceTypesRoute
+  '/app/departments': typeof AppDepartmentsRoute
+  '/app/positions': typeof AppPositionsRoute
+  '/app/shifts': typeof AppShiftsRoute
   '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -106,6 +142,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance-types'
+    | '/app/departments'
+    | '/app/positions'
+    | '/app/shifts'
     | '/session/$'
     | '/app/'
     | '/api/auth/$'
@@ -116,6 +156,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance-types'
+    | '/app/departments'
+    | '/app/positions'
+    | '/app/shifts'
     | '/session/$'
     | '/app'
     | '/api/auth/$'
@@ -127,6 +171,10 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/app/attendance-types'
+    | '/app/departments'
+    | '/app/positions'
+    | '/app/shifts'
     | '/session/$'
     | '/app/'
     | '/api/auth/$'
@@ -195,6 +243,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SessionSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/shifts': {
+      id: '/app/shifts'
+      path: '/shifts'
+      fullPath: '/app/shifts'
+      preLoaderRoute: typeof AppShiftsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/positions': {
+      id: '/app/positions'
+      path: '/positions'
+      fullPath: '/app/positions'
+      preLoaderRoute: typeof AppPositionsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/departments': {
+      id: '/app/departments'
+      path: '/departments'
+      fullPath: '/app/departments'
+      preLoaderRoute: typeof AppDepartmentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/attendance-types': {
+      id: '/app/attendance-types'
+      path: '/attendance-types'
+      fullPath: '/app/attendance-types'
+      preLoaderRoute: typeof AppAttendanceTypesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -213,10 +289,18 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAttendanceTypesRoute: typeof AppAttendanceTypesRoute
+  AppDepartmentsRoute: typeof AppDepartmentsRoute
+  AppPositionsRoute: typeof AppPositionsRoute
+  AppShiftsRoute: typeof AppShiftsRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAttendanceTypesRoute: AppAttendanceTypesRoute,
+  AppDepartmentsRoute: AppDepartmentsRoute,
+  AppPositionsRoute: AppPositionsRoute,
+  AppShiftsRoute: AppShiftsRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
