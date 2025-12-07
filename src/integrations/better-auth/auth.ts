@@ -9,7 +9,7 @@ export const auth = betterAuth({
 	secret: process.env.BETTER_AUTH_SECRET || import.meta.env.BETTER_AUTH_SECRET,
 	emailAndPassword: {
 		enabled: true,
-		requireEmailVerification: false, // Disable email verification for now to allow immediate login
+		requireEmailVerification: false,
 	},
 	session: {
 		expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -20,8 +20,12 @@ export const auth = betterAuth({
 		},
 	},
 	baseURL: import.meta.env.VITE_APP_URL || "http://localhost:3000",
-	basePath: "/api/auth",
+	// CHANGED: dari /api/auth ke /session untuk avoid ad blocker
+	basePath: "/session",
 	trustedOrigins: [import.meta.env.VITE_APP_URL || "http://localhost:3000"],
+	advanced: {
+		useSecureCookies: import.meta.env.PROD,
+	},
 });
 
 export type Session = typeof auth.$Infer.Session;

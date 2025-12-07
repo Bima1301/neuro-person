@@ -15,6 +15,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as SessionSplatRouteImport } from './routes/session/$'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -48,6 +49,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const SessionSplatRoute = SessionSplatRouteImport.update({
+  id: '/session/$',
+  path: '/session/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/session/$': typeof SessionSplatRoute
   '/app': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
+  '/session/$': typeof SessionSplatRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/session/$'
     | '/app/'
     | '/api/auth/$'
     | '/api/trpc/$'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/session/$'
     | '/app'
     | '/api/auth/$'
     | '/api/trpc/$'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/sign-in'
     | '/sign-up'
+    | '/session/$'
     | '/app/'
     | '/api/auth/$'
     | '/api/trpc/$'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
+  SessionSplatRoute: typeof SessionSplatRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
@@ -175,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/session/$': {
+      id: '/session/$'
+      path: '/session/$'
+      fullPath: '/session/$'
+      preLoaderRoute: typeof SessionSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -208,6 +228,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
+  SessionSplatRoute: SessionSplatRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
