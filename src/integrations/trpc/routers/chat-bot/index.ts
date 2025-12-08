@@ -1,7 +1,7 @@
-import type { TRPCRouterRecord } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
-import { prisma } from "@/db";
-import { protectedProcedure } from "../../init";
+import type { TRPCRouterRecord } from '@trpc/server'
+import { TRPCError } from '@trpc/server'
+import { prisma } from '@/db'
+import { protectedProcedure } from '../../init'
 import {
 	chatQueryInput,
 	chatHistoryListInput,
@@ -11,78 +11,126 @@ import {
 	chatReindexInput,
 	chatEmbeddingStatsInput,
 	chatSearchInput,
-} from "./validation";
-import { generateResponse } from "@/lib/gemini";
-import { normalizeTodayLocalToUTC, getMonthStartUTC } from "@/lib/date-utils";
+} from './validation'
+import { generateResponse } from '@/lib/gemini'
+import { normalizeTodayLocalToUTC, getMonthStartUTC } from '@/lib/date-utils'
 import type {
 	ChatQueryResponse,
 	ChatSource,
 	EmbeddingStats,
 	ReindexResult,
-} from "./types";
-import { DocumentType, vectorSearch } from "@/lib/embedding-service/utils";
-import { embeddingService } from "@/lib/embedding-service/index";
+} from './types'
+import { DocumentType, vectorSearch } from '@/lib/embedding-service/utils'
+import { embeddingService } from '@/lib/embedding-service/index'
 
 // Helper function to detect query intent
 function detectQueryIntent(question: string): {
-	types: DocumentType[];
-	isStats: boolean;
+	types: DocumentType[]
+	isStats: boolean
 } {
-	const questionLower = question.toLowerCase();
+	const questionLower = question.toLowerCase()
 
 	const isStats =
-		questionLower.includes("berapa") ||
-		questionLower.includes("total") ||
-		questionLower.includes("jumlah") ||
-		questionLower.includes("banyak") ||
-		questionLower.includes("statistik") ||
-		questionLower.includes("summary");
+		questionLower.includes('berapa') ||
+		questionLower.includes('total') ||
+		questionLower.includes('jumlah') ||
+		questionLower.includes('banyak') ||
+		questionLower.includes('statistik') ||
+		questionLower.includes('summary')
 
-	const types: DocumentType[] = [];
+	const types: DocumentType[] = []
 
 	const attendanceKeywords = [
-		'absen', 'kehadiran', 'check in', 'check out', 'hadir',
-		'tidak hadir', 'terlambat', 'cuti', 'izin', 'sakit'
-	];
+		'absen',
+		'kehadiran',
+		'check in',
+		'check out',
+		'hadir',
+		'tidak hadir',
+		'terlambat',
+	]
+
+	// Keywords yang bisa ada di ATTENDANCE dan SHIFT (karena cuti/izin/sakit bisa di shift allocation)
+	const attendanceTypeKeywords = [
+		'cuti',
+		'izin',
+		'sakit',
+		'leave',
+		'permission',
+	]
 
 	const shiftKeywords = [
-		'shift', 'jadwal', 'jam kerja', 'masuk kerja', 'schedule',
-		'pagi', 'siang', 'malam', 'jam masuk', 'jam keluar'
-	];
+		'shift',
+		'jadwal',
+		'jam kerja',
+		'masuk kerja',
+		'schedule',
+		'pagi',
+		'siang',
+		'malam',
+		'jam masuk',
+		'jam keluar',
+	]
 
 	const employeeKeywords = [
-		'karyawan', 'pegawai', 'staff', 'employee', 'nama',
-		'gaji', 'salary', 'department', 'departemen', 'posisi',
-		'position', 'jabatan', 'tunjangan'
-	];
+		'karyawan',
+		'pegawai',
+		'staff',
+		'employee',
+		'nama',
+		'gaji',
+		'salary',
+		'department',
+		'departemen',
+		'posisi',
+		'position',
+		'jabatan',
+		'tunjangan',
+	]
 
-	if (attendanceKeywords.some(kw => questionLower.includes(kw))) {
-		types.push(DocumentType.ATTENDANCE);
+	// Check attendance keywords
+	if (attendanceKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.ATTENDANCE)
 	}
 
-	if (shiftKeywords.some(kw => questionLower.includes(kw))) {
-		types.push(DocumentType.SHIFT);
+	// Check attendance type keywords (cuti, izin, sakit) - bisa di ATTENDANCE atau SHIFT
+	if (attendanceTypeKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.ATTENDANCE)
+		types.push(DocumentType.SHIFT) // Juga cari di SHIFT karena cuti/izin/sakit ada di shift allocation
 	}
 
-	if (employeeKeywords.some(kw => questionLower.includes(kw))) {
-		types.push(DocumentType.EMPLOYEE);
+	// Check shift keywords
+	if (shiftKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.SHIFT)
+	}
+
+	// Check employee keywords
+	if (employeeKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.EMPLOYEE)
 	}
 
 	if (types.length === 0) {
-		types.push(DocumentType.EMPLOYEE, DocumentType.ATTENDANCE, DocumentType.SHIFT);
+		types.push(
+			DocumentType.EMPLOYEE,
+			DocumentType.ATTENDANCE,
+			DocumentType.SHIFT,
+		)
 	}
 
-	return { types, isStats };
+	// Remove duplicates
+	const uniqueTypes = Array.from(new Set(types))
+
+	return { types: uniqueTypes, isStats }
 }
 
 export const chatRouter = {
 	query: protectedProcedure
 		.input(chatQueryInput)
 		.mutation(async ({ input, ctx }): Promise<ChatQueryResponse> => {
-			const { question, contextLimit = 5, conversationHistory = [] } = input;
-			const { userId, organizationId } = ctx;
+			const { question, contextLimit = 5, conversationHistory = [] } = input
+			const { userId, organizationId } = ctx
 
-			const startTime = Date.now();
+			const startTime = Date.now()
 
 			try {
 				// Build conversation context
@@ -92,172 +140,269 @@ export const chatRouter = {
 							.slice(-6)
 							.map(
 								(msg) =>
-									`${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`,
+									`${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`,
 							)
-							.join("\n\n")
-						: "";
+							.join('\n\n')
+						: ''
 
 				// Detect query intent
-				const { types, isStats } = detectQueryIntent(question);
-				console.log(`🔍 [Chat] Query intent: types=${types.join(',')}, isStats=${isStats}`);
+				const { types, isStats } = detectQueryIntent(question)
+				console.log(
+					`🔍 [Chat] Query intent: types=${types.join(',')}, isStats=${isStats}`,
+				)
 
 				// Get aggregate statistics if needed
-				let statsContext = "";
+				let statsContext = ''
 				if (isStats) {
-					const statsData: any = {};
+					const statsData: any = {}
 
 					// Employee stats
 					if (types.includes(DocumentType.EMPLOYEE)) {
-						const [totalEmployees, activeEmployees, employeesByDept] = await Promise.all([
-							prisma.employee.count({ where: { organizationId } }),
-							prisma.employee.count({ where: { organizationId, status: "ACTIVE" } }),
-							prisma.employee.groupBy({
-								by: ["departmentId"],
-								where: { organizationId },
-								_count: true,
-							}),
-						]);
+						const [totalEmployees, activeEmployees, employeesByDept] =
+							await Promise.all([
+								prisma.employee.count({ where: { organizationId } }),
+								prisma.employee.count({
+									where: { organizationId, status: 'ACTIVE' },
+								}),
+								prisma.employee.groupBy({
+									by: ['departmentId'],
+									where: { organizationId },
+									_count: true,
+								}),
+							])
 
-						const deptIds = employeesByDept.map(e => e.departmentId).filter((id): id is string => id !== null);
+						const deptIds = employeesByDept
+							.map((e) => e.departmentId)
+							.filter((id): id is string => id !== null)
 						const departments = await prisma.department.findMany({
 							where: { id: { in: deptIds } },
 							select: { id: true, name: true },
-						});
-						const deptMap = new Map(departments.map(d => [d.id, d.name]));
+						})
+						const deptMap = new Map(departments.map((d) => [d.id, d.name]))
 
 						statsData.employees = {
 							total: totalEmployees,
 							active: activeEmployees,
-							byDepartment: employeesByDept.map(e => ({
-								dept: deptMap.get(e.departmentId || "") || "Tidak ada",
-								count: e._count
-							}))
-						};
+							byDepartment: employeesByDept.map((e) => ({
+								dept: deptMap.get(e.departmentId || '') || 'Tidak ada',
+								count: e._count,
+							})),
+						}
 					}
 
 					// Attendance stats
 					if (types.includes(DocumentType.ATTENDANCE)) {
-						const today = normalizeTodayLocalToUTC();
-						const now = new Date();
-						const startOfMonth = getMonthStartUTC(now.getFullYear(), now.getMonth() + 1);
+						const today = normalizeTodayLocalToUTC()
+						const now = new Date()
+						const startOfMonth = getMonthStartUTC(
+							now.getFullYear(),
+							now.getMonth() + 1,
+						)
 
-						const [todayAttendances, monthAttendances, attendancesByStatus] = await Promise.all([
-							prisma.attendance.count({
-								where: {
-									organizationId,
-									date: today
-								}
-							}),
-							prisma.attendance.count({
-								where: {
-									organizationId,
-									date: { gte: startOfMonth }
-								}
-							}),
-							prisma.attendance.groupBy({
-								by: ["status"],
-								where: {
-									organizationId,
-									date: { gte: startOfMonth }
-								},
-								_count: true,
-							}),
-						]);
+						const [todayAttendances, monthAttendances, attendancesByStatus] =
+							await Promise.all([
+								prisma.attendance.count({
+									where: {
+										organizationId,
+										date: today,
+									},
+								}),
+								prisma.attendance.count({
+									where: {
+										organizationId,
+										date: { gte: startOfMonth },
+									},
+								}),
+								prisma.attendance.groupBy({
+									by: ['status'],
+									where: {
+										organizationId,
+										date: { gte: startOfMonth },
+									},
+									_count: true,
+								}),
+							])
 
 						statsData.attendance = {
 							today: todayAttendances,
 							thisMonth: monthAttendances,
-							byStatus: attendancesByStatus.map(a => ({
+							byStatus: attendancesByStatus.map((a) => ({
 								status: a.status,
-								count: a._count
-							}))
-						};
+								count: a._count,
+							})),
+						}
 					}
 
 					// Shift stats
 					if (types.includes(DocumentType.SHIFT)) {
-						const today = normalizeTodayLocalToUTC();
+						const today = normalizeTodayLocalToUTC()
 						const [totalShifts, todayAllocations] = await Promise.all([
 							prisma.shift.count({ where: { organizationId } }),
 							prisma.employeeShift.count({
 								where: {
 									employee: { organizationId },
-									date: today
-								}
+									date: today,
+								},
 							}),
-						]);
+						])
 
 						statsData.shifts = {
 							totalShiftTypes: totalShifts,
-							todayAllocations: todayAllocations
-						};
+							todayAllocations: todayAllocations,
+						}
 					}
 
 					// Format stats context
-					const statsParts: string[] = ["STATISTIK:"];
+					const statsParts: string[] = ['STATISTIK:']
 					if (statsData.employees) {
 						statsParts.push(`\nKARYAWAN:
 - Total: ${statsData.employees.total}
 - Aktif: ${statsData.employees.active}
-- Per Department: ${statsData.employees.byDepartment.map((d: any) => `${d.dept} (${d.count})`).join(', ')}`);
+- Per Department: ${statsData.employees.byDepartment.map((d: any) => `${d.dept} (${d.count})`).join(', ')}`)
 					}
 					if (statsData.attendance) {
 						statsParts.push(`\nKEHADIRAN:
 - Hari ini: ${statsData.attendance.today}
 - Bulan ini: ${statsData.attendance.thisMonth}
-- Per Status: ${statsData.attendance.byStatus.map((s: any) => `${s.status} (${s.count})`).join(', ')}`);
+- Per Status: ${statsData.attendance.byStatus.map((s: any) => `${s.status} (${s.count})`).join(', ')}`)
 					}
 					if (statsData.shifts) {
 						statsParts.push(`\nSHIFT:
 - Total Tipe Shift: ${statsData.shifts.totalShiftTypes}
-- Alokasi Hari Ini: ${statsData.shifts.todayAllocations}`);
+- Alokasi Hari Ini: ${statsData.shifts.todayAllocations}`)
 					}
 
-					statsContext = statsParts.join('\n');
+					statsContext = statsParts.join('\n')
 				}
 
 				// SEMANTIC SEARCH across detected document types
-				console.log(`🔍 [Chat] Searching across: ${types.join(', ')}`);
+				console.log(`🔍 [Chat] Searching across: ${types.join(', ')}`)
 
-				const searchPromises = types.map(type => {
+				const searchPromises = types.map((type) => {
 					switch (type) {
 						case DocumentType.EMPLOYEE:
-							return embeddingService.employee.searchEmployees(question, organizationId, contextLimit);
+							return embeddingService.employee.searchEmployees(
+								question,
+								organizationId,
+								contextLimit,
+							)
 						case DocumentType.ATTENDANCE:
-							return embeddingService.attendance.searchAttendances(question, organizationId, contextLimit);
+							return embeddingService.attendance.searchAttendances(
+								question,
+								organizationId,
+								contextLimit,
+							)
 						case DocumentType.SHIFT:
-							return embeddingService.shiftAllocation.searchShiftAllocations(question, organizationId, contextLimit);
+							return embeddingService.shiftAllocation.searchShiftAllocations(
+								question,
+								organizationId,
+								contextLimit,
+							)
 						default:
-							return Promise.resolve([]);
+							return Promise.resolve([])
 					}
-				});
+				})
 
-				const searchResults = await Promise.all(searchPromises);
-				const allDocs = searchResults.flat().sort((a, b) => b.similarity - a.similarity);
-				const relevantDocs = allDocs.slice(0, contextLimit);
+				const searchResults = await Promise.all(searchPromises)
+				const allDocs = searchResults
+					.flat()
+					.sort((a, b) => b.similarity - a.similarity)
+				const relevantDocs = allDocs.slice(0, contextLimit)
 
-				const searchTime = Date.now() - startTime;
-				console.log(`✅ [Chat] Found ${relevantDocs.length} relevant documents in ${searchTime}ms`);
+				const searchTime = Date.now() - startTime
+				console.log(
+					`✅ [Chat] Found ${relevantDocs.length} relevant documents in ${searchTime}ms`,
+				)
 
 				// BUILD RAG CONTEXT
-				let context: string;
-				let sources: ChatSource[] = [];
+				let context: string
+				let sources: ChatSource[] = []
 
-				const contextParts: string[] = [];
+				const contextParts: string[] = []
 
 				if (statsContext) {
-					contextParts.push(statsContext);
+					contextParts.push(statsContext)
 				}
 
 				if (relevantDocs.length > 0) {
-					const docContext = relevantDocs
-						.map((doc, idx) => `[Dokumen ${idx + 1}]\nTipe: ${doc.metadata.type}\n${doc.content}`)
-						.join("\n\n---\n\n");
-					contextParts.push(docContext);
+					// Filter documents by date if query mentions time period
+					const questionLower = question.toLowerCase()
+					const now = new Date()
+					const currentMonth = now.getMonth()
+					const currentYear = now.getFullYear()
 
-					// Format sources
-					sources = relevantDocs.map((doc) => {
-						const meta = doc.metadata as any;
+					let filteredDocs = relevantDocs
+
+					// Filter by "bulan ini" / "this month"
+					if (
+						questionLower.includes('bulan ini') ||
+						questionLower.includes('this month')
+					) {
+						filteredDocs = relevantDocs.filter((doc) => {
+							const meta = doc.metadata as any
+							if (meta.date) {
+								try {
+									const docDate = new Date(meta.date)
+									// Check if date is valid and matches current month/year
+									if (!isNaN(docDate.getTime())) {
+										return (
+											docDate.getMonth() === currentMonth &&
+											docDate.getFullYear() === currentYear
+										)
+									}
+								} catch (e) {
+									// If date parsing fails, keep the document
+								}
+							}
+							return true // Keep if no date metadata or invalid date
+						})
+					}
+
+					// Filter by "hari ini" / "today"
+					if (
+						questionLower.includes('hari ini') ||
+						questionLower.includes('today')
+					) {
+						const today = normalizeTodayLocalToUTC()
+						const todayStr = today.toISOString().split('T')[0]
+						filteredDocs = relevantDocs.filter((doc) => {
+							const meta = doc.metadata as any
+							if (meta.date) {
+								try {
+									const docDate = new Date(meta.date)
+									if (!isNaN(docDate.getTime())) {
+										const docDateStr = docDate.toISOString().split('T')[0]
+										return docDateStr === todayStr
+									}
+								} catch (e) {
+									// If date parsing fails, keep the document
+								}
+							}
+							return true
+						})
+					}
+
+					const docContext =
+						filteredDocs.length > 0
+							? filteredDocs
+								.map(
+									(doc, idx) =>
+										`[Dokumen ${idx + 1}]\nTipe: ${doc.metadata.type}\n${doc.content}`,
+								)
+								.join('\n\n---\n\n')
+							: relevantDocs
+								.map(
+									(doc, idx) =>
+										`[Dokumen ${idx + 1}]\nTipe: ${doc.metadata.type}\n${doc.content}`,
+								)
+								.join('\n\n---\n\n')
+					contextParts.push(docContext)
+
+					// Format sources (use filteredDocs if available, otherwise relevantDocs)
+					const docsForSources =
+						filteredDocs.length > 0 ? filteredDocs : relevantDocs
+					sources = docsForSources.map((doc) => {
+						const meta = doc.metadata as any
 						return {
 							type: meta.type,
 							employeeId: meta.employeeId,
@@ -265,31 +410,32 @@ export const chatRouter = {
 							department: meta.departmentName,
 							position: meta.positionName,
 							similarity: Math.round(doc.similarity * 100),
-							preview: doc.content.substring(0, 150) + "...",
-							additionalInfo: meta.type === DocumentType.ATTENDANCE
-								? { date: meta.date, status: meta.status }
-								: meta.type === DocumentType.SHIFT
-									? { date: meta.date, shift: meta.shiftName }
-									: undefined
-						};
-					});
+							preview: doc.content.substring(0, 150) + '...',
+							additionalInfo:
+								meta.type === DocumentType.ATTENDANCE
+									? { date: meta.date, status: meta.status }
+									: meta.type === DocumentType.SHIFT
+										? { date: meta.date, shift: meta.shiftName }
+										: undefined,
+						}
+					})
 				}
 
-				context = contextParts.join("\n\n---\n\n");
+				context = contextParts.join('\n\n---\n\n')
 
 				if (!context) {
-					context = "Tidak ada data yang relevan ditemukan dalam database.";
+					context = 'Tidak ada data yang relevan ditemukan dalam database.'
 				}
 
 				// GENERATE AI RESPONSE
-				console.log(`🤖 [Chat] Generating AI response...`);
+				console.log(`🤖 [Chat] Generating AI response...`)
 				const answer = await generateResponse({
 					question,
 					context,
 					conversationHistory: conversationContext,
-				});
-				const totalTime = Date.now() - startTime;
-				console.log(`✅ [Chat] Response generated in ${totalTime}ms`);
+				})
+				const totalTime = Date.now() - startTime
+				console.log(`✅ [Chat] Response generated in ${totalTime}ms`)
 
 				// SAVE CHAT HISTORY
 				if (userId) {
@@ -298,7 +444,7 @@ export const chatRouter = {
 							userId,
 							organizationId,
 							question,
-							answer: answer || "",
+							answer: answer || '',
 							context: {
 								sources: sources.map((s) => ({
 									type: s.type,
@@ -315,7 +461,7 @@ export const chatRouter = {
 								documentTypes: types,
 							},
 						},
-					});
+					})
 				}
 
 				return {
@@ -327,35 +473,35 @@ export const chatRouter = {
 						totalTime,
 						documentTypes: types,
 					},
-				};
+				}
 			} catch (error) {
-				console.error("❌ [Chat] Error processing query:", error);
+				console.error('❌ [Chat] Error processing query:', error)
 				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
+					code: 'INTERNAL_SERVER_ERROR',
 					message:
 						error instanceof Error
 							? error.message
-							: "Gagal memproses pertanyaan. Silakan coba lagi.",
-				});
+							: 'Gagal memproses pertanyaan. Silakan coba lagi.',
+				})
 			}
 		}),
 
 	history: protectedProcedure
 		.input(chatHistoryListInput)
 		.query(async ({ input, ctx }) => {
-			const { page, limit, search } = input;
-			const skip = (page - 1) * limit;
+			const { page, limit, search } = input
+			const skip = (page - 1) * limit
 
 			const where = {
 				userId: ctx.userId || undefined,
 				organizationId: ctx.organizationId,
 				...(search && {
 					OR: [
-						{ question: { contains: search, mode: "insensitive" as const } },
-						{ answer: { contains: search, mode: "insensitive" as const } },
+						{ question: { contains: search, mode: 'insensitive' as const } },
+						{ answer: { contains: search, mode: 'insensitive' as const } },
 					],
 				}),
-			};
+			}
 
 			const [items, total] = await Promise.all([
 				prisma.chatHistory.findMany({
@@ -370,13 +516,13 @@ export const chatRouter = {
 						},
 					},
 					orderBy: {
-						createdAt: "desc",
+						createdAt: 'desc',
 					},
 					skip,
 					take: limit,
 				}),
 				prisma.chatHistory.count({ where }),
-			]);
+			])
 
 			return {
 				items,
@@ -384,7 +530,7 @@ export const chatRouter = {
 				page,
 				perPage: limit,
 				totalPages: Math.ceil(total / limit),
-			};
+			}
 		}),
 
 	get: protectedProcedure.input(chatGetInput).query(async ({ input, ctx }) => {
@@ -403,16 +549,16 @@ export const chatRouter = {
 					},
 				},
 			},
-		});
+		})
 
 		if (!chat) {
 			throw new TRPCError({
-				code: "NOT_FOUND",
-				message: "Chat history tidak ditemukan",
-			});
+				code: 'NOT_FOUND',
+				message: 'Chat history tidak ditemukan',
+			})
 		}
 
-		return chat;
+		return chat
 	}),
 
 	delete: protectedProcedure
@@ -424,20 +570,20 @@ export const chatRouter = {
 					userId: ctx.userId || undefined,
 					organizationId: ctx.organizationId,
 				},
-			});
+			})
 
 			if (!chat) {
 				throw new TRPCError({
-					code: "NOT_FOUND",
-					message: "Chat history tidak ditemukan",
-				});
+					code: 'NOT_FOUND',
+					message: 'Chat history tidak ditemukan',
+				})
 			}
 
 			await prisma.chatHistory.delete({
 				where: { id: input.id },
-			});
+			})
 
-			return { success: true };
+			return { success: true }
 		}),
 
 	clearHistory: protectedProcedure
@@ -448,12 +594,12 @@ export const chatRouter = {
 					userId: ctx.userId || undefined,
 					organizationId: ctx.organizationId,
 				},
-			});
+			})
 
 			return {
 				success: true,
 				deletedCount: deleted.count,
-			};
+			}
 		}),
 
 	reindex: protectedProcedure
@@ -461,132 +607,162 @@ export const chatRouter = {
 		.mutation(async ({ input, ctx }): Promise<ReindexResult> => {
 			if (!ctx.userId) {
 				throw new TRPCError({
-					code: "UNAUTHORIZED",
-					message: "User tidak terautentikasi",
-				});
+					code: 'UNAUTHORIZED',
+					message: 'User tidak terautentikasi',
+				})
 			}
 
 			const user = await prisma.user.findUnique({
 				where: { id: ctx.userId },
 				select: { role: true },
-			});
+			})
 
-			if (!user || !["ADMIN", "HR_MANAGER"].includes(user.role)) {
+			if (!user || !['ADMIN', 'HR_MANAGER'].includes(user.role)) {
 				throw new TRPCError({
-					code: "FORBIDDEN",
-					message: "Hanya Admin atau HR Manager yang dapat melakukan re-indexing",
-				});
+					code: 'FORBIDDEN',
+					message:
+						'Hanya Admin atau HR Manager yang dapat melakukan re-indexing',
+				})
 			}
 
 			try {
-				const { documentType, documentIds, reindexAll, startDate, endDate } = input;
+				const { documentType, documentIds, reindexAll, startDate, endDate } =
+					input
 
 				if (reindexAll) {
-					console.log(`🔄 [Chat] Starting full re-index for org: ${ctx.organizationId}`);
+					console.log(
+						`🔄 [Chat] Starting full re-index for org: ${ctx.organizationId}`,
+					)
 
-					const results = { success: 0, failed: 0, errors: [] as string[], total: 0 };
+					const results = {
+						success: 0,
+						failed: 0,
+						errors: [] as string[],
+						total: 0,
+					}
 
 					// Re-index based on document type
 					if (!documentType || documentType === 'employee') {
-						const empResults = await embeddingService.employee.embedAllEmployees(ctx.organizationId);
-						results.success += empResults.success;
-						results.failed += empResults.failed;
-						results.errors.push(...empResults.errors);
+						const empResults =
+							await embeddingService.employee.embedAllEmployees(
+								ctx.organizationId,
+							)
+						results.success += empResults.success
+						results.failed += empResults.failed
+						results.errors.push(...empResults.errors)
 					}
 
 					if (!documentType || documentType === 'attendance') {
-						const now = new Date();
-						const start = startDate ? new Date(startDate) : getMonthStartUTC(now.getFullYear(), 1);
-						const end = endDate ? new Date(endDate) : new Date();
-						const attResults = await embeddingService.attendance.embedAttendancesByDateRange(ctx.organizationId, start, end);
-						results.success += attResults.success;
-						results.failed += attResults.failed;
-						results.errors.push(...attResults.errors);
+						const now = new Date()
+						const start = startDate
+							? new Date(startDate)
+							: getMonthStartUTC(now.getFullYear(), 1)
+						const end = endDate ? new Date(endDate) : new Date()
+						const attResults =
+							await embeddingService.attendance.embedAttendancesByDateRange(
+								ctx.organizationId,
+								start,
+								end,
+							)
+						results.success += attResults.success
+						results.failed += attResults.failed
+						results.errors.push(...attResults.errors)
 					}
 
 					if (!documentType || documentType === 'shift') {
-						const now = new Date();
-						const start = startDate ? new Date(startDate) : getMonthStartUTC(now.getFullYear(), 1);
-						const end = endDate ? new Date(endDate) : new Date();
-						const shiftResults = await embeddingService.shiftAllocation.embedShiftAllocationsByDateRange(ctx.organizationId, start, end);
-						results.success += shiftResults.success;
-						results.failed += shiftResults.failed;
-						results.errors.push(...shiftResults.errors);
+						const now = new Date()
+						const start = startDate
+							? new Date(startDate)
+							: getMonthStartUTC(now.getFullYear(), 1)
+						const end = endDate ? new Date(endDate) : new Date()
+						const shiftResults =
+							await embeddingService.shiftAllocation.embedShiftAllocationsByDateRange(
+								ctx.organizationId,
+								start,
+								end,
+							)
+						results.success += shiftResults.success
+						results.failed += shiftResults.failed
+						results.errors.push(...shiftResults.errors)
 					}
 
-					results.total = results.success + results.failed;
+					results.total = results.success + results.failed
 
 					return {
-						message: "Re-indexing selesai",
+						message: 'Re-indexing selesai',
 						...results,
-					};
+					}
 				}
 
 				if (documentIds && documentIds.length > 0) {
-					console.log(`🔄 [Chat] Re-indexing ${documentIds.length} documents`);
+					console.log(`🔄 [Chat] Re-indexing ${documentIds.length} documents`)
 
-					const embedFn = documentType === 'attendance'
-						? embeddingService.attendance.embedAttendance
-						: documentType === 'shift'
-							? embeddingService.shiftAllocation.embedShiftAllocation
-							: embeddingService.employee.embedEmployee;
+					const embedFn =
+						documentType === 'attendance'
+							? embeddingService.attendance.embedAttendance
+							: documentType === 'shift'
+								? embeddingService.shiftAllocation.embedShiftAllocation
+								: embeddingService.employee.embedEmployee
 
 					const results = await Promise.allSettled(
-						documentIds.map((id) => embedFn(id))
-					);
+						documentIds.map((id) => embedFn(id)),
+					)
 
-					const success = results.filter((r) => r.status === "fulfilled").length;
-					const failed = results.filter((r) => r.status === "rejected").length;
+					const success = results.filter((r) => r.status === 'fulfilled').length
+					const failed = results.filter((r) => r.status === 'rejected').length
 					const errors = results
-						.filter((r) => r.status === "rejected")
-						.map((r) => (r as PromiseRejectedResult).reason?.message || "Unknown error");
+						.filter((r) => r.status === 'rejected')
+						.map(
+							(r) =>
+								(r as PromiseRejectedResult).reason?.message || 'Unknown error',
+						)
 
 					return {
-						message: "Re-indexing dokumen terpilih selesai",
+						message: 'Re-indexing dokumen terpilih selesai',
 						success,
 						failed,
 						total: documentIds.length,
 						errors: errors.length > 0 ? errors : undefined,
-					};
+					}
 				}
 
 				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: "Pilih documentIds atau set reindexAll: true",
-				});
+					code: 'BAD_REQUEST',
+					message: 'Pilih documentIds atau set reindexAll: true',
+				})
 			} catch (error) {
-				console.error("❌ [Chat] Error during re-indexing:", error);
+				console.error('❌ [Chat] Error during re-indexing:', error)
 
 				if (error instanceof TRPCError) {
-					throw error;
+					throw error
 				}
 
 				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Gagal melakukan re-indexing",
-				});
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Gagal melakukan re-indexing',
+				})
 			}
 		}),
 
 	embeddingStats: protectedProcedure
 		.input(chatEmbeddingStatsInput)
 		.query(async ({ input, ctx }): Promise<EmbeddingStats> => {
-			const { documentType = "employee" } = input;
+			const { documentType = 'employee' } = input
 
-			let totalDocuments = 0;
+			let totalDocuments = 0
 
 			if (documentType === 'employee') {
 				totalDocuments = await prisma.employee.count({
 					where: { organizationId: ctx.organizationId },
-				});
+				})
 			} else if (documentType === 'attendance') {
 				totalDocuments = await prisma.attendance.count({
 					where: { organizationId: ctx.organizationId },
-				});
+				})
 			} else if (documentType === 'shift') {
 				totalDocuments = await prisma.employeeShift.count({
 					where: { employee: { organizationId: ctx.organizationId } },
-				});
+				})
 			}
 
 			const [totalEmbeddings, latestEmbedding] = await Promise.all([
@@ -594,7 +770,7 @@ export const chatRouter = {
 					where: {
 						organizationId: ctx.organizationId,
 						metadata: {
-							path: ["type"],
+							path: ['type'],
 							equals: documentType,
 						},
 					},
@@ -603,22 +779,23 @@ export const chatRouter = {
 					where: {
 						organizationId: ctx.organizationId,
 						metadata: {
-							path: ["type"],
+							path: ['type'],
 							equals: documentType,
 						},
 					},
 					orderBy: {
-						updatedAt: "desc",
+						updatedAt: 'desc',
 					},
 					select: {
 						updatedAt: true,
 					},
 				}),
-			]);
+			])
 
-			const coverage = totalDocuments > 0
-				? Math.round((totalEmbeddings / totalDocuments) * 100)
-				: 0;
+			const coverage =
+				totalDocuments > 0
+					? Math.round((totalEmbeddings / totalDocuments) * 100)
+					: 0
 
 			return {
 				documentType,
@@ -627,36 +804,36 @@ export const chatRouter = {
 				coverage,
 				needsIndexing: totalDocuments - totalEmbeddings,
 				lastUpdated: latestEmbedding?.updatedAt,
-			};
+			}
 		}),
 
 	search: protectedProcedure
 		.input(chatSearchInput)
 		.query(async ({ input, ctx }) => {
-			const { query, documentType, limit, minSimilarity = 0 } = input;
+			const { query, documentType, limit, minSimilarity = 0 } = input
 
 			try {
 				const results = await vectorSearch(query, ctx.organizationId, {
 					limit,
 					documentType: documentType as DocumentType,
 					minSimilarity,
-				});
+				})
 
 				return {
 					results: results.map((doc) => ({
 						id: doc.id,
 						metadata: doc.metadata,
 						similarity: Math.round(doc.similarity * 100),
-						preview: doc.content.substring(0, 200) + "...",
+						preview: doc.content.substring(0, 200) + '...',
 					})),
 					total: results.length,
-				};
+				}
 			} catch (error) {
-				console.error("❌ [Chat] Error in search:", error);
+				console.error('❌ [Chat] Error in search:', error)
 				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "Gagal melakukan pencarian",
-				});
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Gagal melakukan pencarian',
+				})
 			}
 		}),
 
@@ -686,15 +863,15 @@ export const chatRouter = {
 					},
 				},
 			}),
-		]);
+		])
 
 		return {
 			totalChats,
 			chatsToday,
 			chatsThisWeek,
-		};
+		}
 	}),
-} satisfies TRPCRouterRecord;
+} satisfies TRPCRouterRecord
 
-export * from "./validation";
-export * from "./types";
+export * from './validation'
+export * from './types'

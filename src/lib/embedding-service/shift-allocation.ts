@@ -8,14 +8,25 @@ export function formatShiftAllocationForEmbedding(allocation: any): string {
     timeZone: 'UTC',
   })
 
+  const attendanceTypeName = allocation.attendanceType.name
+  const attendanceTypeCode = allocation.attendanceType.code || ''
+  const isMustPresence = allocation.attendanceType.isMustPresence
+
+  // Format yang lebih deskriptif dan highlight tipe kehadiran
+  // Menyebutkan tipe kehadiran secara berulang agar semantic search lebih mudah menemukan
+  const attendanceTypeContext = isMustPresence
+    ? `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}.`
+    : `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}. Status: ${attendanceTypeName}.`
+
   return `
 Jadwal Shift Karyawan: ${allocation.employee.firstName} ${allocation.employee.lastName}
 NIK: ${allocation.employee.employeeId}
 Department: ${allocation.employee.department?.name || 'Tidak ada'}
 Position: ${allocation.employee.position?.name || 'Tidak ada'}
 Tanggal: ${date}
-Tipe Kehadiran: ${allocation.attendanceType.name} (${allocation.attendanceType.code || ''})
-Harus Presensi: ${allocation.attendanceType.isMustPresence ? 'Ya' : 'Tidak'}
+Tipe Kehadiran: ${attendanceTypeName}${attendanceTypeCode ? ` (${attendanceTypeCode})` : ''}
+${attendanceTypeContext}
+Harus Presensi: ${isMustPresence ? 'Ya' : 'Tidak'}
 Shift: ${allocation.shift ? `${allocation.shift.name} (${allocation.shift.startTime} - ${allocation.shift.endTime})` : 'Tidak ada shift'}
 `.trim()
 }

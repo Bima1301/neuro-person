@@ -32,19 +32,19 @@ export type ChatHistoryListResponse = PaginatedResponse<ChatHistoryItem>;
  * Source document yang digunakan dalam RAG
  */
 export interface ChatSource {
-    type?: DocumentType
+	type?: DocumentType
 	employeeId?: string;
 	name?: string;
 	department?: string;
 	position?: string;
 	similarity: number; // Percentage 0-100
 	preview?: string; // Preview content
-    additionalInfo?: {
-        date?: string;
-        status?: string;
-        shift?: string;
-        [key: string]: any;
-      };
+	additionalInfo?: {
+		date?: string;
+		status?: string;
+		shift?: string;
+		[key: string]: any;
+	};
 }
 
 /**
@@ -67,7 +67,7 @@ export interface ChatQueryResponse {
 		totalSources: number;
 		searchTime: number;
 		totalTime: number;
-        documentTypes: DocumentType[];
+		documentTypes: DocumentType[];
 	};
 }
 
