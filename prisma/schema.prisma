@@ -146,9 +146,6 @@ model Employee {
   department   Department? @relation(fields: [departmentId], references: [id])
   positionId   String?
   position     Position?   @relation(fields: [positionId], references: [id])
-  managerId    String?
-  manager      Employee?   @relation("ManagerEmployee", fields: [managerId], references: [id])
-  subordinates Employee[]  @relation("ManagerEmployee")
 
   hireDate       DateTime
   employmentType EmploymentType @default(FULL_TIME)
@@ -374,7 +371,7 @@ model Payroll {
   grossSalary    Float    @default(0) // Gaji kotor (baseSalary + totalAllowance)
   totalAllowance Float    @default(0) // Total tambahan
   totalDeduction Float    @default(0) // Total potongan
-  netSalary      Float    // Gaji bersih (grossSalary - totalDeduction)
+  netSalary      Float // Gaji bersih (grossSalary - totalDeduction)
 
   status PayrollStatus @default(PENDING)
   paidAt DateTime?
@@ -412,20 +409,20 @@ model SalaryComponent {
 }
 
 enum SalaryComponentType {
-  ADDITION  // Tambahan (tunjangan, bonus, dll)
+  ADDITION // Tambahan (tunjangan, bonus, dll)
   DEDUCTION // Potongan (pajak, BPJS, dll)
 }
 
 // Komponen gaji dalam payroll (bukan relasi, input biasa)
 model PayrollComponent {
-  id       String  @id @default(cuid())
+  id        String  @id @default(cuid())
   payrollId String
-  payroll  Payroll @relation(fields: [payrollId], references: [id], onDelete: Cascade)
+  payroll   Payroll @relation(fields: [payrollId], references: [id], onDelete: Cascade)
 
-  name        String               // Nama komponen (bisa dari master atau manual)
-  type        SalaryComponentType  // ADDITION or DEDUCTION
-  amount      Float                // Jumlah
-  sourceId    String?              // ID dari master data jika dari master (opsional)
+  name     String // Nama komponen (bisa dari master atau manual)
+  type     SalaryComponentType // ADDITION or DEDUCTION
+  amount   Float // Jumlah
+  sourceId String? // ID dari master data jika dari master (opsional)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

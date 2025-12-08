@@ -1,17 +1,16 @@
 import { generateEmbedding } from '../local-embedding'
 import { DocumentType, upsertEmbedding } from './utils'
 import type { DocumentMetadata } from './utils'
-import type { EmployeeDetail } from '@/integrations/trpc/routers/employee'
+import type { EmployeeEmbeddingFormat } from '@/integrations/trpc/routers/employee'
 import { prisma } from '@/db'
 
-export function formatEmployeeForEmbedding(employee: EmployeeDetail): string {
+export function formatEmployeeForEmbedding(employee: EmployeeEmbeddingFormat): string {
   return `
 Karyawan: ${employee.firstName} ${employee.lastName}
 NIK: ${employee.employeeId}
 Email: ${employee.email}
 Department: ${employee.department?.name || 'Tidak ada'}
 Position: ${employee.position?.name || 'Tidak ada'}
-Manager: ${employee.manager ? `${employee.manager.firstName} ${employee.manager.lastName}` : 'Tidak ada'}
 Status: ${employee.status}
 Tipe Employment: ${employee.employmentType}
 Tanggal Masuk: ${employee.hireDate}
@@ -28,7 +27,6 @@ export async function embedEmployee(employeeId: string): Promise<void> {
         department: true,
         position: true,
         user: { select: { email: true, role: true } },
-        manager: { select: { firstName: true, lastName: true } },
         allowances: { include: { allowanceType: true } },
       },
     })

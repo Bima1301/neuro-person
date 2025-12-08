@@ -187,7 +187,6 @@ export const EmployeeScalarFieldEnum = {
   maritalStatus: 'maritalStatus',
   departmentId: 'departmentId',
   positionId: 'positionId',
-  managerId: 'managerId',
   hireDate: 'hireDate',
   employmentType: 'employmentType',
   status: 'status',

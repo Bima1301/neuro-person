@@ -38,3 +38,12 @@ export type EmployeePaginatedResult = PaginatedResponse<
     }
   }>
 >
+
+export type EmployeeEmbeddingFormat = Prisma.EmployeeGetPayload<{
+  include: {
+    department: true,
+    position: true,
+    user: { select: { email: true, role: true } },
+    allowances: { include: { allowanceType: true } },
+  },
+}>
