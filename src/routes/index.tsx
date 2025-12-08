@@ -83,12 +83,6 @@ function LandingPage() {
       description:
         'Asisten AI cerdas untuk membantu menjawab pertanyaan tentang HR dan kebijakan perusahaan.',
     },
-    {
-      icon: Shield,
-      title: 'Keamanan Data',
-      description:
-        'Data karyawan terlindungi dengan enkripsi dan kontrol akses berbasis peran (RBAC).',
-    },
   ]
 
   const testimonials = [
