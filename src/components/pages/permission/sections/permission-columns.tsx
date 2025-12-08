@@ -36,7 +36,6 @@ const getStatusBadge = (status: string) => {
     PENDING: { variant: 'secondary', label: 'Menunggu' },
     APPROVED: { variant: 'default', label: 'Disetujui' },
     REJECTED: { variant: 'destructive', label: 'Ditolak' },
-    CANCELLED: { variant: 'outline', label: 'Dibatalkan' },
   }
   return config[status] || { variant: 'outline', label: status }
 }
@@ -54,63 +53,63 @@ export const createPermissionColumns = (
   onApprove: (id: string) => void,
   onReject: (id: string) => void,
 ): Array<ColumnDef<PermissionRequest>> => [
-  {
-    id: 'employee',
-    header: 'Karyawan',
-    cell: ({ row }) => (
-      <div>
-        <p className="font-medium">
-          {row.original.employee.firstName} {row.original.employee.lastName}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          {row.original.employee.employeeId}
-        </p>
-      </div>
-    ),
-  },
-  {
-    id: 'attendanceType',
-    header: 'Tipe Perizinan',
-    cell: ({ row }) => row.original.attendanceType.name,
-  },
-  {
-    id: 'date',
-    header: 'Tanggal',
-    cell: ({ row }) =>
-      `${formatDate(row.original.startDate)} - ${formatDate(row.original.endDate)}`,
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => {
-      const status = getStatusBadge(row.getValue('status'))
-      return <Badge variant={status.variant}>{status.label}</Badge>
-    },
-  },
-  {
-    id: 'actions',
-    header: () => <span className="sr-only">Aksi</span>,
-    cell: ({ row }) =>
-      row.original.status === 'PENDING' ? (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onApprove(row.original.id)}>
-                <Check className="mr-2 h-4 w-4 text-green-600" />
-                Setujui
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onReject(row.original.id)}>
-                <X className="mr-2 h-4 w-4 text-destructive" />
-                Tolak
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    {
+      id: 'employee',
+      header: 'Karyawan',
+      cell: ({ row }) => (
+        <div>
+          <p className="font-medium">
+            {row.original.employee.firstName} {row.original.employee.lastName}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {row.original.employee.employeeId}
+          </p>
         </div>
-      ) : null,
-  },
-]
+      ),
+    },
+    {
+      id: 'attendanceType',
+      header: 'Tipe Perizinan',
+      cell: ({ row }) => row.original.attendanceType.name,
+    },
+    {
+      id: 'date',
+      header: 'Tanggal',
+      cell: ({ row }) =>
+        `${formatDate(row.original.startDate)} - ${formatDate(row.original.endDate)}`,
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ row }) => {
+        const status = getStatusBadge(row.getValue('status'))
+        return <Badge variant={status.variant}>{status.label}</Badge>
+      },
+    },
+    {
+      id: 'actions',
+      header: () => <span className="sr-only">Aksi</span>,
+      cell: ({ row }) =>
+        row.original.status === 'PENDING' ? (
+          <div className="text-right">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onApprove(row.original.id)}>
+                  <Check className="mr-2 h-4 w-4 text-green-600" />
+                  Setujui
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onReject(row.original.id)}>
+                  <X className="mr-2 h-4 w-4 text-destructive" />
+                  Tolak
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : null,
+    },
+  ]

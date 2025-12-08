@@ -34,6 +34,10 @@ import {
   employeeMutationInput,
 } from '@/integrations/trpc/routers/employee/validation'
 import { cn } from '@/lib/utils'
+import {
+  SelectEmptyState,
+  SelectEmptyStateWithAdd,
+} from '@/components/shared/select-empty-state'
 
 interface EmployeeFormProps {
   mode: 'create' | 'edit'
@@ -175,8 +179,7 @@ export function EmployeeForm({
       } catch (error) {
         setIsUploadingAvatar(false)
         toast.error(
-          `Gagal mengunggah avatar: ${
-            error instanceof Error ? error.message : 'Error tidak diketahui'
+          `Gagal mengunggah avatar: ${error instanceof Error ? error.message : 'Error tidak diketahui'
           }`,
         )
         return // Stop submission if upload fails
@@ -547,17 +550,33 @@ export function EmployeeForm({
                       darkMode ? 'bg-[#252932] border-white/10 text-white' : ''
                     }
                   >
-                    {departments.map((dept) => (
-                      <SelectItem
-                        key={dept.id}
-                        value={dept.id}
-                        className={
-                          darkMode ? 'text-white focus:bg-white/10' : ''
-                        }
-                      >
-                        {dept.name}
-                      </SelectItem>
-                    ))}
+                    {departments.length === 0 ? (
+                      <SelectEmptyState
+                        message="Belum ada departemen"
+                        createButtonLabel="Buat Departemen"
+                        createRoute="/app/departments"
+                      />
+                    ) : (
+                      <>
+                        {departments.map((dept) => (
+                          <SelectItem
+                            key={dept.id}
+                            value={dept.id}
+                            className={
+                              darkMode ? 'text-white focus:bg-white/10' : ''
+                            }
+                          >
+                            {dept.name}
+                          </SelectItem>
+                        ))}
+                        <SelectEmptyStateWithAdd
+                          message=""
+                          createButtonLabel="Buat Departemen Baru"
+                          createRoute="/app/departments"
+                          items={departments}
+                        />
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -587,28 +606,43 @@ export function EmployeeForm({
                       darkMode ? 'bg-[#252932] border-white/10 text-white' : ''
                     }
                   >
-                    {positions.map((pos) => (
-                      <SelectItem
-                        key={pos.id}
-                        value={pos.id}
-                        className={
-                          darkMode ? 'text-white focus:bg-white/10' : ''
-                        }
-                      >
-                        {pos.name}
-                        {pos.baseSalary && pos.baseSalary > 0 && (
-                          <span
-                            className={`ml-2 ${
-                              darkMode
-                                ? 'text-white/60'
-                                : 'text-muted-foreground'
-                            }`}
+                    {positions.length === 0 ? (
+                      <SelectEmptyState
+                        message="Belum ada posisi"
+                        createButtonLabel="Buat Posisi"
+                        createRoute="/app/positions"
+                      />
+                    ) : (
+                      <>
+                        {positions.map((pos) => (
+                          <SelectItem
+                            key={pos.id}
+                            value={pos.id}
+                            className={
+                              darkMode ? 'text-white focus:bg-white/10' : ''
+                            }
                           >
-                            (Rp {pos.baseSalary.toLocaleString('id-ID')})
-                          </span>
-                        )}
-                      </SelectItem>
-                    ))}
+                            {pos.name}
+                            {pos.baseSalary && pos.baseSalary > 0 && (
+                              <span
+                                className={`ml-2 ${darkMode
+                                  ? 'text-white/60'
+                                  : 'text-muted-foreground'
+                                  }`}
+                              >
+                                (Rp {pos.baseSalary.toLocaleString('id-ID')})
+                              </span>
+                            )}
+                          </SelectItem>
+                        ))}
+                        <SelectEmptyStateWithAdd
+                          message=""
+                          createButtonLabel="Buat Posisi Baru"
+                          createRoute="/app/positions"
+                          items={positions}
+                        />
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -709,7 +743,7 @@ export function EmployeeForm({
                   <FormLabel className={labelClassName}>Password *</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Minimal 6 karakter"
                       className={inputClassName}
                       {...field}

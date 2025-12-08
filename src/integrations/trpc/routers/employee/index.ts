@@ -220,9 +220,9 @@ export const employeeRouter = {
         console.error('Error creating Better Auth user:', error)
         const errorMessage =
           error &&
-          typeof error === 'object' &&
-          'message' in error &&
-          typeof (error as { message: string }).message === 'string'
+            typeof error === 'object' &&
+            'message' in error &&
+            typeof (error as { message: string }).message === 'string'
             ? (error as { message: string }).message
             : 'Gagal membuat akun di sistem autentikasi'
         throw new TRPCError({
@@ -648,6 +648,7 @@ export const employeeRouter = {
             row['Nama Belakang'] || row['Last Name'] || '',
           ).trim()
           email = String(row.Email || '').trim()
+          const password = String(row.Password || '').trim()
           const phone = String(row.Telepon || row.Phone || '').trim()
           const departmentId = String(
             row['Department ID'] || row.DepartmentID || row.DepartmentId || '',
@@ -754,8 +755,8 @@ export const employeeRouter = {
             continue
           }
 
-          // Generate temporary password for import
-          const tempPassword = `Temp${employeeId}${Date.now()}`.substring(0, 20)
+          // Use password from Excel if provided, otherwise generate temporary password
+          const tempPassword = password || `Temp${employeeId}${Date.now()}`.substring(0, 20)
 
           // Sanitize username
           const sanitizeUsername = (str: string): string => {
@@ -800,9 +801,9 @@ export const employeeRouter = {
             )
             const errorMessage =
               error &&
-              typeof error === 'object' &&
-              'message' in error &&
-              typeof (error as { message: string }).message === 'string'
+                typeof error === 'object' &&
+                'message' in error &&
+                typeof (error as { message: string }).message === 'string'
                 ? (error as { message: string }).message
                 : 'Gagal membuat akun di sistem autentikasi'
             results.push({
@@ -832,12 +833,12 @@ export const employeeRouter = {
                   : 'ACTIVE',
               ...(departmentId &&
                 deptMap.has(departmentId) && {
-                  department: { connect: { id: departmentId } },
-                }),
+                department: { connect: { id: departmentId } },
+              }),
               ...(positionId &&
                 posMap.has(positionId) && {
-                  position: { connect: { id: positionId } },
-                }),
+                position: { connect: { id: positionId } },
+              }),
               user: {
                 connect: {
                   id: authUserId,
@@ -905,13 +906,45 @@ export const employeeRouter = {
 
   downloadTemplate: protectedProcedure.mutation(async ({ ctx }) => {
     // Get all departments and positions
-    const departments = await prisma.department.findMany({
+    let departments = await prisma.department.findMany({
       where: { organizationId: ctx.organizationId },
     })
-    const positions = await prisma.position.findMany({
+    let positions = await prisma.position.findMany({
       where: { organizationId: ctx.organizationId },
       include: { department: true },
     })
+
+    // Create dummy data if empty
+    if (departments.length === 0) {
+      departments = [
+        { id: 'DEPT-DUMMY-001', name: 'Human Resources' },
+        { id: 'DEPT-DUMMY-002', name: 'Finance' },
+        { id: 'DEPT-DUMMY-003', name: 'IT' },
+      ] as any[]
+    }
+
+    if (positions.length === 0) {
+      positions = [
+        {
+          id: 'POS-DUMMY-001',
+          name: 'HR Manager',
+          departmentId: departments[0].id,
+          department: { id: departments[0].id, name: departments[0].name }
+        },
+        {
+          id: 'POS-DUMMY-002',
+          name: 'Accountant',
+          departmentId: departments[1].id,
+          department: { id: departments[1].id, name: departments[1].name }
+        },
+        {
+          id: 'POS-DUMMY-003',
+          name: 'Software Developer',
+          departmentId: departments[2].id,
+          department: { id: departments[2].id, name: departments[2].name }
+        },
+      ] as any[]
+    }
 
     // Create workbook
     const workbook = utils.book_new()
@@ -923,6 +956,7 @@ export const employeeRouter = {
         'Nama Depan': 'John',
         'Nama Belakang': 'Doe',
         Email: 'john.doe@example.com',
+        Password: 'password',
         Telepon: '081234567890',
         'Department ID': departments[0]?.id || '',
         'Position ID': positions[0]?.id || '',
@@ -935,6 +969,7 @@ export const employeeRouter = {
         'Nama Depan': 'Jane',
         'Nama Belakang': 'Smith',
         Email: 'jane.smith@example.com',
+        Password: 'password',
         Telepon: '081234567891',
         'Department ID': departments[0]?.id || '',
         'Position ID': positions[0]?.id || '',
@@ -950,6 +985,7 @@ export const employeeRouter = {
       { wch: 15 }, // Nama Depan
       { wch: 15 }, // Nama Belakang
       { wch: 25 }, // Email
+      { wch: 15 }, // Password
       { wch: 15 }, // Telepon
       { wch: 30 }, // Department ID
       { wch: 30 }, // Position ID

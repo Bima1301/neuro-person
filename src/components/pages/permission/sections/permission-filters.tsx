@@ -56,7 +56,6 @@ export function PermissionFilters({
               <SelectItem value="PENDING">Menunggu</SelectItem>
               <SelectItem value="APPROVED">Disetujui</SelectItem>
               <SelectItem value="REJECTED">Ditolak</SelectItem>
-              <SelectItem value="CANCELLED">Dibatalkan</SelectItem>
             </SelectContent>
           </Select>
         </div>

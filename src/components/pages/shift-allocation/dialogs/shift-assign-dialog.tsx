@@ -16,6 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  SelectEmptyState,
+  SelectEmptyStateWithAdd,
+} from '@/components/shared/select-empty-state'
 
 interface Shift {
   id: string
@@ -111,11 +115,29 @@ export function ShiftAssignDialog({
               <SelectValue placeholder="Pilih tipe kehadiran" />
             </SelectTrigger>
             <SelectContent>
-              {attendanceTypes.map((at) => (
-                <SelectItem key={at.id} value={at.id}>
-                  {at.name} {at.code && `(${at.code})`}
-                </SelectItem>
-              ))}
+              {attendanceTypes.length === 0 ? (
+                <SelectEmptyState
+                  message="Belum ada tipe kehadiran"
+                  createButtonLabel="Buat Tipe Kehadiran"
+                  createRoute="/app/attendance-types"
+                  onClose={() => onOpenChange(false)}
+                />
+              ) : (
+                <>
+                  {attendanceTypes.map((at) => (
+                    <SelectItem key={at.id} value={at.id}>
+                      {at.name} {at.code && `(${at.code})`}
+                    </SelectItem>
+                  ))}
+                  <SelectEmptyStateWithAdd
+                    message=""
+                    createButtonLabel="Buat Tipe Kehadiran Baru"
+                    createRoute="/app/attendance-types"
+                    onClose={() => onOpenChange(false)}
+                    items={attendanceTypes}
+                  />
+                </>
+              )}
             </SelectContent>
           </Select>
 
@@ -125,11 +147,29 @@ export function ShiftAssignDialog({
                 <SelectValue placeholder="Pilih shift" />
               </SelectTrigger>
               <SelectContent>
-                {shifts.map((shift) => (
-                  <SelectItem key={shift.id} value={shift.id}>
-                    {shift.name} ({shift.startTime} - {shift.endTime})
-                  </SelectItem>
-                ))}
+                {shifts.length === 0 ? (
+                  <SelectEmptyState
+                    message="Belum ada shift"
+                    createButtonLabel="Buat Shift"
+                    createRoute="/app/shifts"
+                    onClose={() => onOpenChange(false)}
+                  />
+                ) : (
+                  <>
+                    {shifts.map((shift) => (
+                      <SelectItem key={shift.id} value={shift.id}>
+                        {shift.name} ({shift.startTime} - {shift.endTime})
+                      </SelectItem>
+                    ))}
+                    <SelectEmptyStateWithAdd
+                      message=""
+                      createButtonLabel="Buat Shift Baru"
+                      createRoute="/app/shifts"
+                      onClose={() => onOpenChange(false)}
+                      items={shifts}
+                    />
+                  </>
+                )}
               </SelectContent>
             </Select>
           )}

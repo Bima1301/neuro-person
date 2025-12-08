@@ -112,9 +112,6 @@ export default function Header({ filter, setFilter }: Props) {
                     <SelectItem value="REJECTED" className="text-white">
                       Ditolak
                     </SelectItem>
-                    <SelectItem value="CANCELLED" className="text-white">
-                      Dibatalkan
-                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

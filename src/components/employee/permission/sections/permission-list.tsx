@@ -210,7 +210,6 @@ export default function PermissionList({ filter, setFilter }: Props) {
       PENDING: { variant: 'secondary', label: 'Menunggu' },
       APPROVED: { variant: 'default', label: 'Disetujui' },
       REJECTED: { variant: 'destructive', label: 'Ditolak' },
-      CANCELLED: { variant: 'outline', label: 'Dibatalkan' },
     }
     return config[status] || { variant: 'outline', label: status }
   }
@@ -343,15 +342,14 @@ export default function PermissionList({ filter, setFilter }: Props) {
                       </div>
                       <Badge
                         variant={status.variant}
-                        className={`ml-3 ${
-                          permission.status === 'APPROVED'
-                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                            : permission.status === 'PENDING'
-                              ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-                              : permission.status === 'REJECTED'
-                                ? 'bg-red-500/20 text-red-400 border-red-500/30'
-                                : 'bg-gray-500/20 text-gray-400 border-gray-500/30'
-                        } backdrop-blur-sm`}
+                        className={`ml-3 ${permission.status === 'APPROVED'
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                          : permission.status === 'PENDING'
+                            ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                            : permission.status === 'REJECTED'
+                              ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                              : 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+                          } backdrop-blur-sm`}
                       >
                         {status.label}
                       </Badge>
@@ -419,7 +417,7 @@ export default function PermissionList({ filter, setFilter }: Props) {
                           <SelectItem
                             key={type.id}
                             value={type.id}
-                            className="text-white focus:bg-[#252932]"
+                            className="text-white! focus:bg-[#252932]"
                           >
                             {type.name}
                           </SelectItem>
@@ -445,6 +443,7 @@ export default function PermissionList({ filter, setFilter }: Props) {
                           type="date"
                           {...field}
                           className="bg-[#252932] border-white/10 text-white"
+                          min={new Date().toISOString().split('T')[0]}
                         />
                       </FormControl>
                       <FormMessage />
@@ -465,6 +464,7 @@ export default function PermissionList({ filter, setFilter }: Props) {
                           type="date"
                           {...field}
                           className="bg-[#252932] border-white/10 text-white"
+                          min={new Date().toISOString().split('T')[0]}
                         />
                       </FormControl>
                       <FormMessage />

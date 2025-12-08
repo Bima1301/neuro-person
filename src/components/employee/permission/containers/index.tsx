@@ -12,7 +12,7 @@ export default function PermissionContainer() {
   }>({
     search: '',
     status: undefined,
-    month: new Date().getMonth().toString(),
+    month: String(new Date().getMonth() + 1).padStart(2, '0'), // --> Bulan 1-12 (bukan 0-11)
     year: new Date().getFullYear().toString(),
   })
 

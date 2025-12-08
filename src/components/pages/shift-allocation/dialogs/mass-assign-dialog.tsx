@@ -4,6 +4,10 @@ import { Plus, Trash2 } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import type { ShiftAllocationMassAssignInput } from '@/integrations/trpc/routers/shift-allocation/validation'
 import { EmployeeCombobox } from '@/components/shared/employee-combobox'
+import {
+  SelectEmptyState,
+  SelectEmptyStateWithAdd,
+} from '@/components/shared/select-empty-state'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -278,11 +282,29 @@ export function MassAssignDialog({
                                   <SelectValue placeholder="Pilih tipe kehadiran" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {attendanceTypes.map((at) => (
-                                    <SelectItem key={at.id} value={at.id}>
-                                      {at.name} {at.code && `(${at.code})`}
-                                    </SelectItem>
-                                  ))}
+                                  {attendanceTypes.length === 0 ? (
+                                    <SelectEmptyState
+                                      message="Belum ada tipe kehadiran"
+                                      createButtonLabel="Buat Tipe Kehadiran"
+                                      createRoute="/app/attendance-types"
+                                      onClose={() => onOpenChange(false)}
+                                    />
+                                  ) : (
+                                    <>
+                                      {attendanceTypes.map((at) => (
+                                        <SelectItem key={at.id} value={at.id}>
+                                          {at.name} {at.code && `(${at.code})`}
+                                        </SelectItem>
+                                      ))}
+                                      <SelectEmptyStateWithAdd
+                                        message=""
+                                        createButtonLabel="Buat Tipe Kehadiran Baru"
+                                        createRoute="/app/attendance-types"
+                                        onClose={() => onOpenChange(false)}
+                                        items={attendanceTypes}
+                                      />
+                                    </>
+                                  )}
                                 </SelectContent>
                               </Select>
                             </FormControl>
@@ -306,15 +328,33 @@ export function MassAssignDialog({
                                     <SelectValue placeholder="Pilih shift" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {shifts.map((shift) => (
-                                      <SelectItem
-                                        key={shift.id}
-                                        value={shift.id}
-                                      >
-                                        {shift.name} ({shift.startTime}-
-                                        {shift.endTime})
-                                      </SelectItem>
-                                    ))}
+                                    {shifts.length === 0 ? (
+                                      <SelectEmptyState
+                                        message="Belum ada shift"
+                                        createButtonLabel="Buat Shift"
+                                        createRoute="/app/shifts"
+                                        onClose={() => onOpenChange(false)}
+                                      />
+                                    ) : (
+                                      <>
+                                        {shifts.map((shift) => (
+                                          <SelectItem
+                                            key={shift.id}
+                                            value={shift.id}
+                                          >
+                                            {shift.name} ({shift.startTime}-
+                                            {shift.endTime})
+                                          </SelectItem>
+                                        ))}
+                                        <SelectEmptyStateWithAdd
+                                          message=""
+                                          createButtonLabel="Buat Shift Baru"
+                                          createRoute="/app/shifts"
+                                          onClose={() => onOpenChange(false)}
+                                          items={shifts}
+                                        />
+                                      </>
+                                    )}
                                   </SelectContent>
                                 </Select>
                               </FormControl>

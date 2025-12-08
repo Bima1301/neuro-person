@@ -22,6 +22,10 @@ import {
 } from '@/components/ui/select'
 import { useTRPC } from '@/integrations/trpc/react'
 import { positionCreateInput } from '@/integrations/trpc/routers/position/validation'
+import {
+  SelectEmptyState,
+  SelectEmptyStateWithAdd,
+} from '@/components/shared/select-empty-state'
 
 interface PositionFormProps {
   onSubmit: (data: PositionCreateInput) => void
@@ -80,11 +84,27 @@ export function PositionForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {departments.map((dept) => (
-                    <SelectItem key={dept.id} value={dept.id}>
-                      {dept.name}
-                    </SelectItem>
-                  ))}
+                  {departments.length === 0 ? (
+                    <SelectEmptyState
+                      message="Belum ada departemen"
+                      createButtonLabel="Buat Departemen"
+                      createRoute="/app/departments"
+                    />
+                  ) : (
+                    <>
+                      {departments.map((dept) => (
+                        <SelectItem key={dept.id} value={dept.id}>
+                          {dept.name}
+                        </SelectItem>
+                      ))}
+                      <SelectEmptyStateWithAdd
+                        message=""
+                        createButtonLabel="Buat Departemen Baru"
+                        createRoute="/app/departments"
+                        items={departments}
+                      />
+                    </>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
