@@ -1,9 +1,11 @@
 import { protectedProcedure } from '../../init'
 import {
+  payrollDeleteInput,
   payrollGenerateInput,
   payrollGetInput,
   payrollListInput,
   payrollSummaryInput,
+  payrollUpdateInput,
   payrollUpdateStatusInput,
 } from './validation'
 import type { TRPCRouterRecord } from '@trpc/server'
@@ -64,6 +66,7 @@ export const payrollRouter = {
               allowances: { include: { allowanceType: true } },
             },
           },
+          payrollComponents: true,
         },
       })
     }),
@@ -72,38 +75,183 @@ export const payrollRouter = {
     .input(payrollGenerateInput)
     .mutation(async ({ input, ctx }) => {
       const period = new Date(input.period)
-      const employees = await prisma.employee.findMany({
+      
+      // Verify employee belongs to organization
+      const employee = await prisma.employee.findFirst({
         where: {
+          id: input.employeeId,
           organizationId: ctx.organizationId,
           status: 'ACTIVE',
         },
-        include: { allowances: true },
       })
 
-      const payrolls = await Promise.all(
-        employees.map(async (emp) => {
-          const totalAllowance = emp.allowances.reduce(
-            (sum, a) => sum + a.amount,
-            0,
-          )
-          const netSalary = emp.baseSalary + totalAllowance
+      if (!employee) {
+        throw new Error('Karyawan tidak ditemukan')
+      }
 
-          return prisma.payroll.upsert({
-            where: { employeeId_period: { employeeId: emp.id, period } },
-            update: { baseSalary: emp.baseSalary, totalAllowance, netSalary },
-            create: {
-              organizationId: ctx.organizationId,
-              employeeId: emp.id,
-              period,
-              baseSalary: emp.baseSalary,
-              totalAllowance,
-              netSalary,
-            },
+      // Get all salary components from master data
+      const salaryComponents = await prisma.salaryComponent.findMany({
+        where: {
+          organizationId: ctx.organizationId,
+        },
+      })
+
+      // Calculate totals from master data components
+      let totalAllowance = 0
+      let totalDeduction = 0
+
+      salaryComponents.forEach((sc) => {
+        const amount = sc.amount ?? 0
+        if (sc.type === 'ADDITION') {
+          totalAllowance += amount
+        } else {
+          totalDeduction += amount
+        }
+      })
+
+      const grossSalary = employee.baseSalary + totalAllowance
+      const netSalary = grossSalary - totalDeduction
+
+      const payroll = await prisma.payroll.upsert({
+        where: { employeeId_period: { employeeId: employee.id, period } },
+        update: {
+          baseSalary: employee.baseSalary,
+          grossSalary,
+          totalAllowance,
+          totalDeduction,
+          netSalary,
+        },
+        create: {
+          organizationId: ctx.organizationId,
+          employeeId: employee.id,
+          period,
+          baseSalary: employee.baseSalary,
+          grossSalary,
+          totalAllowance,
+          totalDeduction,
+          netSalary,
+        },
+        include: {
+          employee: {
+            select: { firstName: true, lastName: true, employeeId: true },
+          },
+        },
+      })
+
+      // Delete existing payroll components
+      await prisma.payrollComponent.deleteMany({
+        where: { payrollId: payroll.id },
+      })
+
+      // Create payroll components from master data
+      if (salaryComponents.length > 0) {
+        await prisma.payrollComponent.createMany({
+          data: salaryComponents.map((sc) => ({
+            payrollId: payroll.id,
+            name: sc.name,
+            type: sc.type,
+            amount: sc.amount ?? 0,
+            sourceId: sc.id, // Link to master data
+          })),
+        })
+      }
+
+      return await prisma.payroll.findFirst({
+        where: { id: payroll.id },
+        include: {
+          employee: {
+            select: { firstName: true, lastName: true, employeeId: true },
+          },
+          payrollComponents: true,
+        },
+      })
+    }),
+
+  update: protectedProcedure
+    .input(payrollUpdateInput)
+    .mutation(async ({ input, ctx }) => {
+      const payroll = await prisma.payroll.findFirst({
+        where: {
+          id: input.id,
+          organizationId: ctx.organizationId,
+        },
+        include: {
+          payrollComponents: true,
+        },
+      })
+
+      if (!payroll) {
+        throw new Error('Payroll tidak ditemukan')
+      }
+
+      // Update base salary if provided
+      const baseSalary = input.baseSalary ?? payroll.baseSalary
+
+      // Handle components
+      if (input.components !== undefined) {
+        // Delete existing components
+        await prisma.payrollComponent.deleteMany({
+          where: { payrollId: payroll.id },
+        })
+
+        // Create new components
+        if (input.components.length > 0) {
+          await prisma.payrollComponent.createMany({
+            data: input.components.map((comp) => ({
+              payrollId: payroll.id,
+              name: comp.name,
+              type: comp.type,
+              amount: comp.amount,
+              sourceId: comp.sourceId ?? null,
+            })),
           })
-        }),
-      )
+        }
 
-      return payrolls
+        // Recalculate totals
+        const updatedComponents = await prisma.payrollComponent.findMany({
+          where: { payrollId: payroll.id },
+        })
+
+        const totalAllowance = updatedComponents
+          .filter((pc) => pc.type === 'ADDITION')
+          .reduce((sum, pc) => sum + pc.amount, 0)
+
+        const totalDeduction = updatedComponents
+          .filter((pc) => pc.type === 'DEDUCTION')
+          .reduce((sum, pc) => sum + pc.amount, 0)
+
+        const grossSalary = baseSalary + totalAllowance
+        const netSalary = grossSalary - totalDeduction
+
+        return await prisma.payroll.update({
+          where: { id: payroll.id },
+          data: {
+            baseSalary,
+            grossSalary,
+            totalAllowance,
+            totalDeduction,
+            netSalary,
+          },
+          include: {
+            employee: {
+              select: { firstName: true, lastName: true, employeeId: true },
+            },
+            payrollComponents: true,
+          },
+        })
+      }
+
+      // If no components update, just update base salary
+      return await prisma.payroll.update({
+        where: { id: payroll.id },
+        data: { baseSalary },
+        include: {
+          employee: {
+            select: { firstName: true, lastName: true, employeeId: true },
+          },
+          payrollComponents: true,
+        },
+      })
     }),
 
   updateStatus: protectedProcedure
@@ -117,6 +265,38 @@ export const payrollRouter = {
         data: {
           status: input.status,
           paidAt: input.status === 'PAID' ? new Date() : null,
+        },
+      })
+    }),
+
+  delete: protectedProcedure
+    .input(payrollDeleteInput)
+    .mutation(async ({ input, ctx }) => {
+      const payroll = await prisma.payroll.findFirst({
+        where: {
+          id: input.id,
+          organizationId: ctx.organizationId,
+        },
+      })
+
+      if (!payroll) {
+        throw new Error('Payroll tidak ditemukan')
+      }
+
+      if (payroll.status === 'PAID') {
+        throw new Error('Payroll yang sudah dibayar tidak bisa dihapus')
+      }
+
+      // Delete payroll components first (cascade)
+      await prisma.payrollComponent.deleteMany({
+        where: { payrollId: payroll.id },
+      })
+
+      // Delete payroll
+      return await prisma.payroll.delete({
+        where: {
+          id: input.id,
+          organizationId: ctx.organizationId,
         },
       })
     }),

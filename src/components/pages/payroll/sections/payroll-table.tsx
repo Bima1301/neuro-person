@@ -9,6 +9,8 @@ import { useTRPC } from '@/integrations/trpc/react'
 interface PayrollTableProps {
   payrolls: Array<Payroll>
   isLoading: boolean
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
   page?: number
   totalPages?: number
   total?: number
@@ -20,6 +22,8 @@ interface PayrollTableProps {
 export function PayrollTable({
   payrolls,
   isLoading,
+  onEdit,
+  onDelete,
   page,
   totalPages,
   total,
@@ -36,6 +40,9 @@ export function PayrollTable({
         queryClient.invalidateQueries({
           queryKey: trpc.payroll.list.queryKey(),
         })
+        queryClient.invalidateQueries({
+          queryKey: trpc.payroll.summary.queryKey(),
+        })
         toast.success('Status payroll berhasil diupdate')
       },
       onError: (error) => {
@@ -46,10 +53,12 @@ export function PayrollTable({
 
   const columns = useMemo(
     () =>
-      createPayrollColumns((id) =>
-        updateStatusMutation.mutate({ id, status: 'PAID' }),
+      createPayrollColumns(
+        (id) => updateStatusMutation.mutate({ id, status: 'PAID' }),
+        onEdit,
+        onDelete,
       ),
-    [updateStatusMutation],
+    [updateStatusMutation, onEdit, onDelete],
   )
 
   if (isLoading) {

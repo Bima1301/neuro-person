@@ -102,6 +102,14 @@ export const PayrollStatus = {
 export type PayrollStatus = (typeof PayrollStatus)[keyof typeof PayrollStatus]
 
 
+export const SalaryComponentType = {
+  ADDITION: 'ADDITION',
+  DEDUCTION: 'DEDUCTION'
+} as const
+
+export type SalaryComponentType = (typeof SalaryComponentType)[keyof typeof SalaryComponentType]
+
+
 export const NotificationType = {
   INFO: 'INFO',
   WARNING: 'WARNING',

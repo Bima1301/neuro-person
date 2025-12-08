@@ -35,6 +35,7 @@ model Organization {
   attendances        Attendance[]
   permissionRequests PermissionRequest[]
   payrolls           Payroll[]
+  salaryComponents   SalaryComponent[]
   documentEmbeddings DocumentEmbedding[]
   chatHistories      ChatHistory[]
 }
@@ -370,15 +371,18 @@ model Payroll {
 
   period         DateTime // Month/Year
   baseSalary     Float
-  totalAllowance Float    @default(0)
-  totalDeduction Float    @default(0)
-  netSalary      Float
+  grossSalary    Float    @default(0) // Gaji kotor (baseSalary + totalAllowance)
+  totalAllowance Float    @default(0) // Total tambahan
+  totalDeduction Float    @default(0) // Total potongan
+  netSalary      Float    // Gaji bersih (grossSalary - totalDeduction)
 
   status PayrollStatus @default(PENDING)
   paidAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  payrollComponents PayrollComponent[]
 
   @@unique([employeeId, period])
 }
@@ -388,6 +392,45 @@ enum PayrollStatus {
   PROCESSING
   PAID
   CANCELLED
+}
+
+// ==================== SALARY COMPONENT ====================
+model SalaryComponent {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  type        SalaryComponentType // ADDITION or DEDUCTION
+  amount      Float? // Optional, bisa diisi saat digunakan atau fixed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, organizationId])
+}
+
+enum SalaryComponentType {
+  ADDITION  // Tambahan (tunjangan, bonus, dll)
+  DEDUCTION // Potongan (pajak, BPJS, dll)
+}
+
+// Komponen gaji dalam payroll (bukan relasi, input biasa)
+model PayrollComponent {
+  id       String  @id @default(cuid())
+  payrollId String
+  payroll  Payroll @relation(fields: [payrollId], references: [id], onDelete: Cascade)
+
+  name        String               // Nama komponen (bisa dari master atau manual)
+  type        SalaryComponentType  // ADDITION or DEDUCTION
+  amount      Float                // Jumlah
+  sourceId    String?              // ID dari master data jika dari master (opsional)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([payrollId])
 }
 
 model AllowanceType {

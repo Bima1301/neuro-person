@@ -110,6 +110,16 @@ export type PermissionRequest = Prisma.PermissionRequestModel
  */
 export type Payroll = Prisma.PayrollModel
 /**
+ * Model SalaryComponent
+ * 
+ */
+export type SalaryComponent = Prisma.SalaryComponentModel
+/**
+ * Model PayrollComponent
+ * 
+ */
+export type PayrollComponent = Prisma.PayrollComponentModel
+/**
  * Model AllowanceType
  * 
  */

@@ -423,6 +423,23 @@ export type EnumPayrollStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPayrollStatusFilter<$PrismaModel>
 }
 
+export type EnumSalaryComponentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SalaryComponentType | Prisma.EnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel> | $Enums.SalaryComponentType
+}
+
+export type EnumSalaryComponentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SalaryComponentType | Prisma.EnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSalaryComponentTypeWithAggregatesFilter<$PrismaModel> | $Enums.SalaryComponentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel>
+}
+
 export type EnumNotificationTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.NotificationType | Prisma.EnumNotificationTypeFieldRefInput<$PrismaModel>
   in?: $Enums.NotificationType[] | Prisma.ListEnumNotificationTypeFieldRefInput<$PrismaModel>
@@ -884,6 +901,23 @@ export type NestedEnumPayrollStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayrollStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayrollStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSalaryComponentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SalaryComponentType | Prisma.EnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel> | $Enums.SalaryComponentType
+}
+
+export type NestedEnumSalaryComponentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SalaryComponentType | Prisma.EnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SalaryComponentType[] | Prisma.ListEnumSalaryComponentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSalaryComponentTypeWithAggregatesFilter<$PrismaModel> | $Enums.SalaryComponentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSalaryComponentTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {

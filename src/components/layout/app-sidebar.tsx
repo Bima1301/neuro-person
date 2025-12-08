@@ -110,6 +110,11 @@ const masterDataItems = [
     url: '/app/attendance-types',
     icon: CalendarCheck,
   },
+  {
+    title: 'Komponen Gaji',
+    url: '/app/salary-components',
+    icon: CreditCard,
+  },
 ]
 
 const reportItems = [

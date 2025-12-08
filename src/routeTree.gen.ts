@@ -25,6 +25,7 @@ import { Route as EmployeePermissionRouteImport } from './routes/employee/permis
 import { Route as EmployeeAttendanceRouteImport } from './routes/employee/attendance'
 import { Route as AppShiftsRouteImport } from './routes/app/shifts'
 import { Route as AppShiftAllocationRouteImport } from './routes/app/shift-allocation'
+import { Route as AppSalaryComponentsRouteImport } from './routes/app/salary-components'
 import { Route as AppPositionsRouteImport } from './routes/app/positions'
 import { Route as AppPermissionRouteImport } from './routes/app/permission'
 import { Route as AppPayrollRouteImport } from './routes/app/payroll'
@@ -119,6 +120,11 @@ const AppShiftAllocationRoute = AppShiftAllocationRouteImport.update({
   path: '/shift-allocation',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSalaryComponentsRoute = AppSalaryComponentsRouteImport.update({
+  id: '/salary-components',
+  path: '/salary-components',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPositionsRoute = AppPositionsRouteImport.update({
   id: '/positions',
   path: '/positions',
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
   '/employee/attendance': typeof EmployeeAttendanceRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
   '/employee/attendance': typeof EmployeeAttendanceRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
   '/employee/attendance': typeof EmployeeAttendanceRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
     | '/employee/attendance'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
     | '/employee/attendance'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
     | '/employee/attendance'
@@ -498,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShiftAllocationRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/salary-components': {
+      id: '/app/salary-components'
+      path: '/salary-components'
+      fullPath: '/app/salary-components'
+      preLoaderRoute: typeof AppSalaryComponentsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/positions': {
       id: '/app/positions'
       path: '/positions'
@@ -602,6 +621,7 @@ interface AppRouteChildren {
   AppPayrollRoute: typeof AppPayrollRoute
   AppPermissionRoute: typeof AppPermissionRoute
   AppPositionsRoute: typeof AppPositionsRoute
+  AppSalaryComponentsRoute: typeof AppSalaryComponentsRoute
   AppShiftAllocationRoute: typeof AppShiftAllocationRoute
   AppShiftsRoute: typeof AppShiftsRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -617,6 +637,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPayrollRoute: AppPayrollRoute,
   AppPermissionRoute: AppPermissionRoute,
   AppPositionsRoute: AppPositionsRoute,
+  AppSalaryComponentsRoute: AppSalaryComponentsRoute,
   AppShiftAllocationRoute: AppShiftAllocationRoute,
   AppShiftsRoute: AppShiftsRoute,
   AppIndexRoute: AppIndexRoute,

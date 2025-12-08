@@ -1,4 +1,4 @@
-import { Check, MoreHorizontal } from 'lucide-react'
+import { Check, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ export interface Payroll {
   id: string
   period: Date | string
   baseSalary: number
+  grossSalary?: number
   totalAllowance: number
   totalDeduction: number
   netSalary: number
@@ -51,6 +52,8 @@ const formatPeriod = (period: Date | string) => {
 
 export const createPayrollColumns = (
   onMarkPaid: (id: string) => void,
+  onEdit?: (id: string) => void,
+  onDelete?: (id: string) => void,
 ): Array<ColumnDef<Payroll>> => [
   {
     id: 'employee',
@@ -77,6 +80,17 @@ export const createPayrollColumns = (
     cell: ({ row }) => (
       <span className="text-right block">
         {formatCurrency(row.getValue('baseSalary') ?? 0)}
+      </span>
+    ),
+  },
+  {
+    accessorKey: 'grossSalary',
+    header: () => <span className="text-right">Gaji Kotor</span>,
+    cell: ({ row }) => (
+      <span className="text-right block">
+        {formatCurrency(
+          row.getValue('grossSalary') ?? row.original.baseSalary + row.original.totalAllowance,
+        )}
       </span>
     ),
   },
@@ -118,23 +132,39 @@ export const createPayrollColumns = (
   {
     id: 'actions',
     header: () => <span className="sr-only">Aksi</span>,
-    cell: ({ row }) =>
-      row.original.status === 'PENDING' ? (
-        <div className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+    cell: ({ row }) => (
+      <div className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {onEdit && (
+              <DropdownMenuItem onClick={() => onEdit(row.original.id)}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+            )}
+            {row.original.status === 'PENDING' && (
               <DropdownMenuItem onClick={() => onMarkPaid(row.original.id)}>
                 <Check className="mr-2 h-4 w-4 text-green-600" />
                 Tandai Dibayar
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      ) : null,
+            )}
+            {onDelete && row.original.status !== 'PAID' && (
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => onDelete(row.original.id)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Hapus
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    ),
   },
 ]

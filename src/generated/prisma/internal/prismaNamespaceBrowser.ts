@@ -65,6 +65,8 @@ export const ModelName = {
   Attendance: 'Attendance',
   PermissionRequest: 'PermissionRequest',
   Payroll: 'Payroll',
+  SalaryComponent: 'SalaryComponent',
+  PayrollComponent: 'PayrollComponent',
   AllowanceType: 'AllowanceType',
   EmployeeAllowance: 'EmployeeAllowance',
   Notification: 'Notification',
@@ -313,6 +315,7 @@ export const PayrollScalarFieldEnum = {
   employeeId: 'employeeId',
   period: 'period',
   baseSalary: 'baseSalary',
+  grossSalary: 'grossSalary',
   totalAllowance: 'totalAllowance',
   totalDeduction: 'totalDeduction',
   netSalary: 'netSalary',
@@ -323,6 +326,34 @@ export const PayrollScalarFieldEnum = {
 } as const
 
 export type PayrollScalarFieldEnum = (typeof PayrollScalarFieldEnum)[keyof typeof PayrollScalarFieldEnum]
+
+
+export const SalaryComponentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  amount: 'amount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SalaryComponentScalarFieldEnum = (typeof SalaryComponentScalarFieldEnum)[keyof typeof SalaryComponentScalarFieldEnum]
+
+
+export const PayrollComponentScalarFieldEnum = {
+  id: 'id',
+  payrollId: 'payrollId',
+  name: 'name',
+  type: 'type',
+  amount: 'amount',
+  sourceId: 'sourceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollComponentScalarFieldEnum = (typeof PayrollComponentScalarFieldEnum)[keyof typeof PayrollComponentScalarFieldEnum]
 
 
 export const AllowanceTypeScalarFieldEnum = {

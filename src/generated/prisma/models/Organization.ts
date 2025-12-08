@@ -282,6 +282,7 @@ export type OrganizationWhereInput = {
   attendances?: Prisma.AttendanceListRelationFilter
   permissionRequests?: Prisma.PermissionRequestListRelationFilter
   payrolls?: Prisma.PayrollListRelationFilter
+  salaryComponents?: Prisma.SalaryComponentListRelationFilter
   documentEmbeddings?: Prisma.DocumentEmbeddingListRelationFilter
   chatHistories?: Prisma.ChatHistoryListRelationFilter
 }
@@ -310,6 +311,7 @@ export type OrganizationOrderByWithRelationInput = {
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
   permissionRequests?: Prisma.PermissionRequestOrderByRelationAggregateInput
   payrolls?: Prisma.PayrollOrderByRelationAggregateInput
+  salaryComponents?: Prisma.SalaryComponentOrderByRelationAggregateInput
   documentEmbeddings?: Prisma.DocumentEmbeddingOrderByRelationAggregateInput
   chatHistories?: Prisma.ChatHistoryOrderByRelationAggregateInput
 }
@@ -341,6 +343,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   attendances?: Prisma.AttendanceListRelationFilter
   permissionRequests?: Prisma.PermissionRequestListRelationFilter
   payrolls?: Prisma.PayrollListRelationFilter
+  salaryComponents?: Prisma.SalaryComponentListRelationFilter
   documentEmbeddings?: Prisma.DocumentEmbeddingListRelationFilter
   chatHistories?: Prisma.ChatHistoryListRelationFilter
 }, "id" | "slug">
@@ -409,6 +412,7 @@ export type OrganizationCreateInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -437,6 +441,7 @@ export type OrganizationUncheckedCreateInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -465,6 +470,7 @@ export type OrganizationUpdateInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -493,6 +499,7 @@ export type OrganizationUncheckedUpdateInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -755,6 +762,20 @@ export type OrganizationUpdateOneRequiredWithoutPayrollsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutPayrollsInput, Prisma.OrganizationUpdateWithoutPayrollsInput>, Prisma.OrganizationUncheckedUpdateWithoutPayrollsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutSalaryComponentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedCreateWithoutSalaryComponentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSalaryComponentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutSalaryComponentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedCreateWithoutSalaryComponentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutSalaryComponentsInput
+  upsert?: Prisma.OrganizationUpsertWithoutSalaryComponentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutSalaryComponentsInput, Prisma.OrganizationUpdateWithoutSalaryComponentsInput>, Prisma.OrganizationUncheckedUpdateWithoutSalaryComponentsInput>
+}
+
 export type OrganizationCreateNestedOneWithoutAllowanceTypesInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAllowanceTypesInput, Prisma.OrganizationUncheckedCreateWithoutAllowanceTypesInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAllowanceTypesInput
@@ -814,6 +835,7 @@ export type OrganizationCreateWithoutUsersInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -841,6 +863,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -884,6 +907,7 @@ export type OrganizationUpdateWithoutUsersInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -911,6 +935,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -938,6 +963,7 @@ export type OrganizationCreateWithoutEmployeesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -965,6 +991,7 @@ export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1008,6 +1035,7 @@ export type OrganizationUpdateWithoutEmployeesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1035,6 +1063,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1062,6 +1091,7 @@ export type OrganizationCreateWithoutDepartmentsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1089,6 +1119,7 @@ export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1132,6 +1163,7 @@ export type OrganizationUpdateWithoutDepartmentsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1159,6 +1191,7 @@ export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1186,6 +1219,7 @@ export type OrganizationCreateWithoutPositionsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1213,6 +1247,7 @@ export type OrganizationUncheckedCreateWithoutPositionsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1256,6 +1291,7 @@ export type OrganizationUpdateWithoutPositionsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1283,6 +1319,7 @@ export type OrganizationUncheckedUpdateWithoutPositionsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1310,6 +1347,7 @@ export type OrganizationCreateWithoutShiftsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1337,6 +1375,7 @@ export type OrganizationUncheckedCreateWithoutShiftsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1380,6 +1419,7 @@ export type OrganizationUpdateWithoutShiftsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1407,6 +1447,7 @@ export type OrganizationUncheckedUpdateWithoutShiftsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1434,6 +1475,7 @@ export type OrganizationCreateWithoutAttendanceTypesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1461,6 +1503,7 @@ export type OrganizationUncheckedCreateWithoutAttendanceTypesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1504,6 +1547,7 @@ export type OrganizationUpdateWithoutAttendanceTypesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1531,6 +1575,7 @@ export type OrganizationUncheckedUpdateWithoutAttendanceTypesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1558,6 +1603,7 @@ export type OrganizationCreateWithoutAttendancesInput = {
   attendanceTypes?: Prisma.AttendanceTypeCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1585,6 +1631,7 @@ export type OrganizationUncheckedCreateWithoutAttendancesInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1628,6 +1675,7 @@ export type OrganizationUpdateWithoutAttendancesInput = {
   attendanceTypes?: Prisma.AttendanceTypeUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1655,6 +1703,7 @@ export type OrganizationUncheckedUpdateWithoutAttendancesInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1682,6 +1731,7 @@ export type OrganizationCreateWithoutPermissionRequestsInput = {
   attendanceTypes?: Prisma.AttendanceTypeCreateNestedManyWithoutOrganizationInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1709,6 +1759,7 @@ export type OrganizationUncheckedCreateWithoutPermissionRequestsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedCreateNestedManyWithoutOrganizationInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1752,6 +1803,7 @@ export type OrganizationUpdateWithoutPermissionRequestsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUpdateManyWithoutOrganizationNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1779,6 +1831,7 @@ export type OrganizationUncheckedUpdateWithoutPermissionRequestsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1806,6 +1859,7 @@ export type OrganizationCreateWithoutPayrollsInput = {
   attendanceTypes?: Prisma.AttendanceTypeCreateNestedManyWithoutOrganizationInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1833,6 +1887,7 @@ export type OrganizationUncheckedCreateWithoutPayrollsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedCreateNestedManyWithoutOrganizationInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -1876,6 +1931,7 @@ export type OrganizationUpdateWithoutPayrollsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUpdateManyWithoutOrganizationNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -1903,6 +1959,135 @@ export type OrganizationUncheckedUpdateWithoutPayrollsInput = {
   attendanceTypes?: Prisma.AttendanceTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
+  documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
+  chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutSalaryComponentsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  website?: string | null
+  geoPolygon?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoCenter?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoRadius?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  positions?: Prisma.PositionCreateNestedManyWithoutOrganizationInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutOrganizationInput
+  allowanceTypes?: Prisma.AllowanceTypeCreateNestedManyWithoutOrganizationInput
+  attendanceTypes?: Prisma.AttendanceTypeCreateNestedManyWithoutOrganizationInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
+  permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
+  payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
+  chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutSalaryComponentsInput = {
+  id?: string
+  name: string
+  slug: string
+  logo?: string | null
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  website?: string | null
+  geoPolygon?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoCenter?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoRadius?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutOrganizationInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceTypes?: Prisma.AllowanceTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  attendanceTypes?: Prisma.AttendanceTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
+  permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
+  chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutSalaryComponentsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedCreateWithoutSalaryComponentsInput>
+}
+
+export type OrganizationUpsertWithoutSalaryComponentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedUpdateWithoutSalaryComponentsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedCreateWithoutSalaryComponentsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutSalaryComponentsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutSalaryComponentsInput, Prisma.OrganizationUncheckedUpdateWithoutSalaryComponentsInput>
+}
+
+export type OrganizationUpdateWithoutSalaryComponentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  geoPolygon?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoCenter?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoRadius?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutOrganizationNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutOrganizationNestedInput
+  allowanceTypes?: Prisma.AllowanceTypeUpdateManyWithoutOrganizationNestedInput
+  attendanceTypes?: Prisma.AttendanceTypeUpdateManyWithoutOrganizationNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
+  permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
+  payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
+  chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutSalaryComponentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  geoPolygon?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoCenter?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  geoRadius?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutOrganizationNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceTypes?: Prisma.AllowanceTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  attendanceTypes?: Prisma.AttendanceTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -1930,6 +2115,7 @@ export type OrganizationCreateWithoutAllowanceTypesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
@@ -1957,6 +2143,7 @@ export type OrganizationUncheckedCreateWithoutAllowanceTypesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
@@ -2000,6 +2187,7 @@ export type OrganizationUpdateWithoutAllowanceTypesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
@@ -2027,6 +2215,7 @@ export type OrganizationUncheckedUpdateWithoutAllowanceTypesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
@@ -2055,6 +2244,7 @@ export type OrganizationCreateWithoutDocumentEmbeddingsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2082,6 +2272,7 @@ export type OrganizationUncheckedCreateWithoutDocumentEmbeddingsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   chatHistories?: Prisma.ChatHistoryUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2125,6 +2316,7 @@ export type OrganizationUpdateWithoutDocumentEmbeddingsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2152,6 +2344,7 @@ export type OrganizationUncheckedUpdateWithoutDocumentEmbeddingsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   chatHistories?: Prisma.ChatHistoryUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2179,6 +2372,7 @@ export type OrganizationCreateWithoutChatHistoriesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2206,6 +2400,7 @@ export type OrganizationUncheckedCreateWithoutChatHistoriesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutOrganizationInput
   permissionRequests?: Prisma.PermissionRequestUncheckedCreateNestedManyWithoutOrganizationInput
   payrolls?: Prisma.PayrollUncheckedCreateNestedManyWithoutOrganizationInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedCreateNestedManyWithoutOrganizationInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2249,6 +2444,7 @@ export type OrganizationUpdateWithoutChatHistoriesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2276,6 +2472,7 @@ export type OrganizationUncheckedUpdateWithoutChatHistoriesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutOrganizationNestedInput
   permissionRequests?: Prisma.PermissionRequestUncheckedUpdateManyWithoutOrganizationNestedInput
   payrolls?: Prisma.PayrollUncheckedUpdateManyWithoutOrganizationNestedInput
+  salaryComponents?: Prisma.SalaryComponentUncheckedUpdateManyWithoutOrganizationNestedInput
   documentEmbeddings?: Prisma.DocumentEmbeddingUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2295,6 +2492,7 @@ export type OrganizationCountOutputType = {
   attendances: number
   permissionRequests: number
   payrolls: number
+  salaryComponents: number
   documentEmbeddings: number
   chatHistories: number
 }
@@ -2310,6 +2508,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   attendances?: boolean | OrganizationCountOutputTypeCountAttendancesArgs
   permissionRequests?: boolean | OrganizationCountOutputTypeCountPermissionRequestsArgs
   payrolls?: boolean | OrganizationCountOutputTypeCountPayrollsArgs
+  salaryComponents?: boolean | OrganizationCountOutputTypeCountSalaryComponentsArgs
   documentEmbeddings?: boolean | OrganizationCountOutputTypeCountDocumentEmbeddingsArgs
   chatHistories?: boolean | OrganizationCountOutputTypeCountChatHistoriesArgs
 }
@@ -2397,6 +2596,13 @@ export type OrganizationCountOutputTypeCountPayrollsArgs<ExtArgs extends runtime
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountSalaryComponentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SalaryComponentWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountDocumentEmbeddingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DocumentEmbeddingWhereInput
 }
@@ -2433,6 +2639,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   attendances?: boolean | Prisma.Organization$attendancesArgs<ExtArgs>
   permissionRequests?: boolean | Prisma.Organization$permissionRequestsArgs<ExtArgs>
   payrolls?: boolean | Prisma.Organization$payrollsArgs<ExtArgs>
+  salaryComponents?: boolean | Prisma.Organization$salaryComponentsArgs<ExtArgs>
   documentEmbeddings?: boolean | Prisma.Organization$documentEmbeddingsArgs<ExtArgs>
   chatHistories?: boolean | Prisma.Organization$chatHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
@@ -2498,6 +2705,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   attendances?: boolean | Prisma.Organization$attendancesArgs<ExtArgs>
   permissionRequests?: boolean | Prisma.Organization$permissionRequestsArgs<ExtArgs>
   payrolls?: boolean | Prisma.Organization$payrollsArgs<ExtArgs>
+  salaryComponents?: boolean | Prisma.Organization$salaryComponentsArgs<ExtArgs>
   documentEmbeddings?: boolean | Prisma.Organization$documentEmbeddingsArgs<ExtArgs>
   chatHistories?: boolean | Prisma.Organization$chatHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
@@ -2518,6 +2726,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
     permissionRequests: Prisma.$PermissionRequestPayload<ExtArgs>[]
     payrolls: Prisma.$PayrollPayload<ExtArgs>[]
+    salaryComponents: Prisma.$SalaryComponentPayload<ExtArgs>[]
     documentEmbeddings: Prisma.$DocumentEmbeddingPayload<ExtArgs>[]
     chatHistories: Prisma.$ChatHistoryPayload<ExtArgs>[]
   }
@@ -2939,6 +3148,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   attendances<T extends Prisma.Organization$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   permissionRequests<T extends Prisma.Organization$permissionRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$permissionRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrolls<T extends Prisma.Organization$payrollsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$payrollsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  salaryComponents<T extends Prisma.Organization$salaryComponentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$salaryComponentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentEmbeddings<T extends Prisma.Organization$documentEmbeddingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$documentEmbeddingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentEmbeddingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatHistories<T extends Prisma.Organization$chatHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$chatHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3608,6 +3818,30 @@ export type Organization$payrollsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.PayrollScalarFieldEnum | Prisma.PayrollScalarFieldEnum[]
+}
+
+/**
+ * Organization.salaryComponents
+ */
+export type Organization$salaryComponentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SalaryComponent
+   */
+  select?: Prisma.SalaryComponentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SalaryComponent
+   */
+  omit?: Prisma.SalaryComponentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SalaryComponentInclude<ExtArgs> | null
+  where?: Prisma.SalaryComponentWhereInput
+  orderBy?: Prisma.SalaryComponentOrderByWithRelationInput | Prisma.SalaryComponentOrderByWithRelationInput[]
+  cursor?: Prisma.SalaryComponentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SalaryComponentScalarFieldEnum | Prisma.SalaryComponentScalarFieldEnum[]
 }
 
 /**
