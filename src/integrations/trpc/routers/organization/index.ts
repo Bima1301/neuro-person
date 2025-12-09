@@ -193,7 +193,6 @@ export const organizationRouter = {
         },
       })
 
-      // User must exist
       if (!user) {
         return {
           isValid: false,
@@ -201,7 +200,6 @@ export const organizationRouter = {
         }
       }
 
-      // User must have organization
       if (!user.organizationId) {
         return {
           isValid: false,
@@ -209,7 +207,6 @@ export const organizationRouter = {
         }
       }
 
-      // User must have EMPLOYEE role
       if (user.role !== 'EMPLOYEE') {
         return {
           isValid: false,
@@ -217,7 +214,6 @@ export const organizationRouter = {
         }
       }
 
-      // User must have employee record
       if (!user.employee) {
         return {
           isValid: false,
@@ -225,7 +221,6 @@ export const organizationRouter = {
         }
       }
 
-      // Employee must be active
       if (user.employee.status !== 'ACTIVE') {
         return {
           isValid: false,

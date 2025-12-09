@@ -180,9 +180,9 @@ export const employeeRouter = {
       const sanitizeUsername = (str: string): string => {
         return str
           .toLowerCase()
-          .replace(/[^a-z0-9_-]/g, '_') // Replace invalid chars with _
-          .replace(/_{2,}/g, '_') // Replace multiple _ with single _
-          .replace(/^_+|_+$/g, '') // Remove leading/trailing _
+          .replace(/[^a-z0-9_-]/g, '_')
+          .replace(/_{2,}/g, '_')
+          .replace(/^_+|_+$/g, '')
       }
 
       const username = sanitizeUsername(email.split('@')[0] || employeeId)

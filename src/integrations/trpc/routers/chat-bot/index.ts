@@ -23,106 +23,6 @@ import type {
 import { DocumentType, vectorSearch } from '@/lib/embedding-service/utils'
 import { embeddingService } from '@/lib/embedding-service/index'
 
-// Helper function to detect query intent
-function detectQueryIntent(question: string): {
-	types: DocumentType[]
-	isStats: boolean
-} {
-	const questionLower = question.toLowerCase()
-
-	const isStats =
-		questionLower.includes('berapa') ||
-		questionLower.includes('total') ||
-		questionLower.includes('jumlah') ||
-		questionLower.includes('banyak') ||
-		questionLower.includes('statistik') ||
-		questionLower.includes('summary')
-
-	const types: DocumentType[] = []
-
-	const attendanceKeywords = [
-		'absen',
-		'kehadiran',
-		'check in',
-		'check out',
-		'hadir',
-		'tidak hadir',
-		'terlambat',
-	]
-
-	// Keywords yang bisa ada di ATTENDANCE dan SHIFT (karena cuti/izin/sakit bisa di shift allocation)
-	const attendanceTypeKeywords = [
-		'cuti',
-		'izin',
-		'sakit',
-		'leave',
-		'permission',
-	]
-
-	const shiftKeywords = [
-		'shift',
-		'jadwal',
-		'jam kerja',
-		'masuk kerja',
-		'schedule',
-		'pagi',
-		'siang',
-		'malam',
-		'jam masuk',
-		'jam keluar',
-	]
-
-	const employeeKeywords = [
-		'karyawan',
-		'pegawai',
-		'staff',
-		'employee',
-		'nama',
-		'gaji',
-		'salary',
-		'department',
-		'departemen',
-		'posisi',
-		'position',
-		'jabatan',
-		'tunjangan',
-	]
-
-	// Check attendance keywords
-	if (attendanceKeywords.some((kw) => questionLower.includes(kw))) {
-		types.push(DocumentType.ATTENDANCE)
-	}
-
-	// Check attendance type keywords (cuti, izin, sakit) - bisa di ATTENDANCE atau SHIFT
-	if (attendanceTypeKeywords.some((kw) => questionLower.includes(kw))) {
-		types.push(DocumentType.ATTENDANCE)
-		types.push(DocumentType.SHIFT) // Juga cari di SHIFT karena cuti/izin/sakit ada di shift allocation
-	}
-
-	// Check shift keywords
-	if (shiftKeywords.some((kw) => questionLower.includes(kw))) {
-		types.push(DocumentType.SHIFT)
-	}
-
-	// Check employee keywords
-	if (employeeKeywords.some((kw) => questionLower.includes(kw))) {
-		types.push(DocumentType.EMPLOYEE)
-	}
-
-	if (types.length === 0) {
-		types.push(
-			DocumentType.EMPLOYEE,
-			DocumentType.ATTENDANCE,
-			DocumentType.SHIFT,
-		)
-	}
-
-	// Remove duplicates
-	const uniqueTypes = Array.from(new Set(types))
-
-	return { types: uniqueTypes, isStats }
-}
-
 export const chatRouter = {
 	query: protectedProcedure
 		.input(chatQueryInput)
@@ -333,7 +233,6 @@ export const chatRouter = {
 
 					let filteredDocs = relevantDocs
 
-					// Filter by "bulan ini" / "this month"
 					if (
 						questionLower.includes('bulan ini') ||
 						questionLower.includes('this month')
@@ -343,7 +242,6 @@ export const chatRouter = {
 							if (meta.date) {
 								try {
 									const docDate = new Date(meta.date)
-									// Check if date is valid and matches current month/year
 									if (!isNaN(docDate.getTime())) {
 										return (
 											docDate.getMonth() === currentMonth &&
@@ -351,14 +249,13 @@ export const chatRouter = {
 										)
 									}
 								} catch (e) {
-									// If date parsing fails, keep the document
+									console.error('Error parsing date:', e)
 								}
 							}
-							return true // Keep if no date metadata or invalid date
+							return true
 						})
 					}
 
-					// Filter by "hari ini" / "today"
 					if (
 						questionLower.includes('hari ini') ||
 						questionLower.includes('today')
@@ -375,7 +272,7 @@ export const chatRouter = {
 										return docDateStr === todayStr
 									}
 								} catch (e) {
-									// If date parsing fails, keep the document
+									console.error('Error parsing date:', e)
 								}
 							}
 							return true
@@ -872,6 +769,105 @@ export const chatRouter = {
 		}
 	}),
 } satisfies TRPCRouterRecord
+
+function detectQueryIntent(question: string): {
+	types: DocumentType[]
+	isStats: boolean
+} {
+	const questionLower = question.toLowerCase()
+
+	const isStats =
+		questionLower.includes('berapa') ||
+		questionLower.includes('total') ||
+		questionLower.includes('jumlah') ||
+		questionLower.includes('banyak') ||
+		questionLower.includes('statistik') ||
+		questionLower.includes('summary')
+
+	const types: DocumentType[] = []
+
+	const attendanceKeywords = [
+		'absen',
+		'kehadiran',
+		'check in',
+		'check out',
+		'hadir',
+		'tidak hadir',
+		'terlambat',
+	]
+
+	const attendanceTypeKeywords = [
+		'cuti',
+		'izin',
+		'sakit',
+		'leave',
+		'permission',
+	]
+
+	const shiftKeywords = [
+		'shift',
+		'jadwal',
+		'jam kerja',
+		'masuk kerja',
+		'schedule',
+		'pagi',
+		'siang',
+		'malam',
+		'jam masuk',
+		'jam keluar',
+	]
+
+	const employeeKeywords = [
+		'karyawan',
+		'pegawai',
+		'staff',
+		'employee',
+		'nama',
+		'gaji',
+		'salary',
+		'department',
+		'departemen',
+		'posisi',
+		'position',
+		'jabatan',
+		'tunjangan',
+	]
+
+	// Check attendance keywords
+	if (attendanceKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.ATTENDANCE)
+	}
+
+	// Check attendance type keywords (cuti, izin, sakit) - bisa di ATTENDANCE atau SHIFT
+	if (attendanceTypeKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.ATTENDANCE)
+		types.push(DocumentType.SHIFT)
+	}
+
+	// Check shift keywords
+	if (shiftKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.SHIFT)
+	}
+
+	// Check employee keywords
+	if (employeeKeywords.some((kw) => questionLower.includes(kw))) {
+		types.push(DocumentType.EMPLOYEE)
+	}
+
+	if (types.length === 0) {
+		types.push(
+			DocumentType.EMPLOYEE,
+			DocumentType.ATTENDANCE,
+			DocumentType.SHIFT,
+		)
+	}
+
+	// Remove duplicates
+	const uniqueTypes = Array.from(new Set(types))
+
+	return { types: uniqueTypes, isStats }
+}
+
 
 export * from './validation'
 export * from './types'

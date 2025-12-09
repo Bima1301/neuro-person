@@ -5,9 +5,7 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { uploadToCloudinary } from '@/lib/cloudinary'
 
 export const uploadRouter = {
-  /**
-   * Upload image to Cloudinary
-   */
+  // Upload image to Cloudinary
   uploadImage: protectedProcedure
     .input(uploadImageInput)
     .mutation(async ({ input }): Promise<{ url: string }> => {

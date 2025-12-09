@@ -83,9 +83,8 @@ export const employeePaginatedInput = z.object({
   perPage: z.number().min(1).max(100).default(10),
 })
 
-// Inferred types
 export const employeeImportInput = z.object({
-  file: requiredStringFor('File wajib diisi'), // base64 encoded file
+  file: requiredStringFor('File wajib diisi'),
   fileName: requiredStringFor('Nama file wajib diisi'),
 })
 

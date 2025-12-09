@@ -10,18 +10,18 @@ export const shiftAllocationAssignInput = z.object({
   employeeId: requiredStringFor('Karyawan wajib dipilih'),
   attendanceTypeId: requiredStringFor('Tipe kehadiran wajib dipilih'),
   shiftId: z.string().optional(), // Optional, only required if attendanceType.isMustPresence = true
-  date: requiredStringFor('Tanggal wajib diisi'), // ISO date string YYYY-MM-DD
+  date: requiredStringFor('Tanggal wajib diisi'),
 })
 
 export const shiftAllocationMassAssignInput = z.object({
   startDate: requiredStringFor('Tanggal mulai wajib diisi'),
   endDate: requiredStringFor('Tanggal selesai wajib diisi'),
-  days: z.array(requiredNumberFor('Hari').min(0).max(6)), // 0 = Sunday, 6 = Saturday
+  days: z.array(requiredNumberFor('Hari').min(0).max(6)),
   assignments: z.array(
     z.object({
       employeeId: requiredStringFor('Karyawan wajib dipilih'),
       attendanceTypeId: requiredStringFor('Tipe kehadiran wajib dipilih'),
-      shiftId: z.string().optional(), // Optional, only required if attendanceType.isMustPresence = true
+      shiftId: z.string().optional(),
     }),
   ),
 })
@@ -39,7 +39,7 @@ export const shiftAllocationEmployeeScheduleInput = z.object({
       z.object({
         day: requiredNumberFor('Hari').min(0).max(6),
         attendanceTypeId: requiredStringFor('Tipe kehadiran wajib dipilih'),
-        shiftId: z.string().optional(), // Optional, only required if attendanceType.isMustPresence = true
+        shiftId: z.string().optional(),
       }),
     )
     .max(7),

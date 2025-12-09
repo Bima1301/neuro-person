@@ -24,21 +24,21 @@ export const organizationCreateInput = z.object({
 })
 
 export const organizationUpdateInput = z.object({
-	name: z.string().min(2).optional(),
-	address: z.string().optional(),
-	phone: z.string().optional(),
-	email: z.string().optional(),
-	website: z.string().optional(),
-	logo: z.string().optional(),
-	geoPolygon: z
-		.array(z.tuple([z.number(), z.number()]))
-		.optional()
-		.nullable(),
-	geoCenter: z
-		.object({ lat: z.number(), lng: z.number() })
-		.optional()
-		.nullable(),
-	geoRadius: z.number().optional().nullable(),
+  name: z.string().min(2).optional(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  website: z.string().optional(),
+  logo: z.string().optional(),
+  geoPolygon: z
+    .array(z.tuple([z.number(), z.number()]))
+    .optional()
+    .nullable(),
+  geoCenter: z
+    .object({ lat: z.number(), lng: z.number() })
+    .optional()
+    .nullable(),
+  geoRadius: z.number().optional().nullable(),
 });
 
 export type OrganizationCreateInput = z.infer<typeof organizationCreateInput>;

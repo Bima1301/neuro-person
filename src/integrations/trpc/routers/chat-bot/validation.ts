@@ -2,11 +2,8 @@
 // src/server/routers/chat/validation.ts
 import { DocumentType } from "@/lib/embedding-service/utils";
 import { z } from "zod";
-import { requiredStringFor, requiredNumberFor } from '@/lib/utils'
+import { requiredStringFor } from '@/lib/utils'
 
-/**
- * Input untuk chat query
- */
 export const chatQueryInput = z.object({
   question: requiredStringFor('Pertanyaan tidak boleh kosong').max(
     500,
@@ -21,60 +18,39 @@ export const chatQueryInput = z.object({
       }),
     )
     .optional()
-    .default([]), // Riwayat percakapan untuk context
+    .default([]),
 })
 
-/**
- * Input untuk chat history list
- */
 export const chatHistoryListInput = z.object({
-	page: z.number().min(1).default(1),
-	limit: z.number().min(1).max(50).default(20),
-	search: z.string().optional(), // Search dalam question atau answer
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(50).default(20),
+  search: z.string().optional(),
 });
 
-/**
- * Input untuk get single chat
- */
 export const chatGetInput = z.object({
   id: requiredStringFor('ID chat'),
 })
 
-/**
- * Input untuk delete chat
- */
 export const chatDeleteInput = z.object({
   id: requiredStringFor('ID chat'),
 })
 
-/**
- * Input untuk clear all history
- */
 export const chatClearHistoryInput = z.object({
-	confirm: z.literal(true),
+  confirm: z.literal(true),
 });
 
-/**
- * Input untuk re-index embeddings
- */
 export const chatReindexInput = z.object({
-	documentType: z.enum(Object.values(DocumentType)).optional(),
-	documentIds: z.array(z.string()).optional(),
-	reindexAll: z.boolean().default(false),
-    startDate: z.string().optional(),
-    endDate: z.string().optional(),
+  documentType: z.enum(Object.values(DocumentType)).optional(),
+  documentIds: z.array(z.string()).optional(),
+  reindexAll: z.boolean().default(false),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
 
-/**
- * Input untuk embedding stats
- */
 export const chatEmbeddingStatsInput = z.object({
-	documentType: z.enum(Object.values(DocumentType)).optional(),
+  documentType: z.enum(Object.values(DocumentType)).optional(),
 });
 
-/**
- * Input untuk search documents (for debugging)
- */
 export const chatSearchInput = z.object({
   query: requiredStringFor('Query pencarian'),
   documentType: z.enum(Object.values(DocumentType)).optional(),
@@ -82,7 +58,6 @@ export const chatSearchInput = z.object({
   minSimilarity: z.number().min(0).max(1).default(0).optional(),
 })
 
-// Inferred types
 export type ChatQueryInput = z.infer<typeof chatQueryInput>;
 export type ChatHistoryListInput = z.infer<typeof chatHistoryListInput>;
 export type ChatGetInput = z.infer<typeof chatGetInput>;
