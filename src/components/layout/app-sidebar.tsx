@@ -314,7 +314,6 @@ export function AppSidebar({
 
         <SidebarGroup>
           <SidebarGroupLabel>
-            <Database className="size-4 mr-2" />
             Master Data
           </SidebarGroupLabel>
           <SidebarGroupContent>

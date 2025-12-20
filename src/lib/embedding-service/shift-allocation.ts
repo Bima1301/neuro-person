@@ -12,11 +12,20 @@ export function formatShiftAllocationForEmbedding(allocation: any): string {
   const attendanceTypeCode = allocation.attendanceType.code || ''
   const isMustPresence = allocation.attendanceType.isMustPresence
 
-  // Format yang lebih deskriptif dan highlight tipe kehadiran
-  // Menyebutkan tipe kehadiran secara berulang agar semantic search lebih mudah menemukan
+  let cutiKeywords = ''
+  if (!isMustPresence) {
+    if (attendanceTypeName.toLowerCase().includes('cuti')) {
+      cutiKeywords = `cuti cuti sakit cuti tahunan cuti karyawan melakukan cuti mengambil cuti`
+    } else if (attendanceTypeName.toLowerCase().includes('izin')) {
+      cutiKeywords = `izin perizinan izin karyawan`
+    } else if (attendanceTypeName.toLowerCase().includes('libur')) {
+      cutiKeywords = `libur libur nasional hari libur`
+    }
+  }
+
   const attendanceTypeContext = isMustPresence
-    ? `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}.`
-    : `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}. Status: ${attendanceTypeName}.`
+    ? `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}. Hari kerja.`
+    : `Status kehadiran: ${attendanceTypeName}. Tipe kehadiran: ${attendanceTypeName}. Karyawan dengan tipe kehadiran ${attendanceTypeName}. Status: ${attendanceTypeName}. ${cutiKeywords}`
 
   return `
 Jadwal Shift Karyawan: ${allocation.employee.firstName} ${allocation.employee.lastName}
@@ -27,6 +36,7 @@ Tanggal: ${date}
 Tipe Kehadiran: ${attendanceTypeName}${attendanceTypeCode ? ` (${attendanceTypeCode})` : ''}
 ${attendanceTypeContext}
 Harus Presensi: ${isMustPresence ? 'Ya' : 'Tidak'}
+${!isMustPresence ? `Karyawan tidak hadir. Karyawan ${attendanceTypeName.toLowerCase()}. ${cutiKeywords}` : ''}
 Shift: ${allocation.shift ? `${allocation.shift.name} (${allocation.shift.startTime} - ${allocation.shift.endTime})` : 'Tidak ada shift'}
 `.trim()
 }

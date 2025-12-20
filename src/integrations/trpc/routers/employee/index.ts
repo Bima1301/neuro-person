@@ -920,7 +920,7 @@ export const employeeRouter = {
         { id: 'DEPT-DUMMY-001', name: 'Human Resources' },
         { id: 'DEPT-DUMMY-002', name: 'Finance' },
         { id: 'DEPT-DUMMY-003', name: 'IT' },
-      ] as any[]
+      ] as Array<any>
     }
 
     if (positions.length === 0) {
@@ -943,7 +943,7 @@ export const employeeRouter = {
           departmentId: departments[2].id,
           department: { id: departments[2].id, name: departments[2].name }
         },
-      ] as any[]
+      ] as Array<any>
     }
 
     // Create workbook

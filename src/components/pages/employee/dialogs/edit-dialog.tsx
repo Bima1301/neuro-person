@@ -57,11 +57,10 @@ export function EmployeeEditDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={`max-w-4xl! max-h-[90dvh] overflow-y-auto ${
-          darkMode
+        className={`max-w-4xl! max-h-[90dvh] overflow-y-auto ${darkMode
             ? 'bg-[#1e2128] border-white/10 text-white [&_button[data-slot="dialog-close"]]:text-white/70 [&_button[data-slot="dialog-close"]]:hover:text-white'
             : ''
-        }`}
+          }`}
       >
         <DialogHeader>
           <DialogTitle className={darkMode ? 'text-white' : ''}>
@@ -73,9 +72,8 @@ export function EmployeeEditDialog({
         </DialogHeader>
         {isLoading ? (
           <div
-            className={`py-8 text-center ${
-              darkMode ? 'text-white/60' : 'text-muted-foreground'
-            }`}
+            className={`py-8 text-center ${darkMode ? 'text-white/60' : 'text-muted-foreground'
+              }`}
           >
             Memuat data...
           </div>

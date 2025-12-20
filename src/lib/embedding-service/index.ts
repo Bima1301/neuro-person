@@ -21,6 +21,8 @@ import {
   embedShiftAllocationsByDateRange,
   searchShiftAllocations,
 } from './shift-allocation'
+import { cleanupDuplicateEmbeddings } from './utils'
+import { DocumentType } from './types'
 
 export const embeddingService = {
   employee: {
@@ -45,5 +47,21 @@ export const embeddingService = {
     searchAttendances,
     embedAttendancesByDateRange,
     bulkEmbedAttendances,
+  },
+  cleanupDuplicates: async (
+    organizationId: string,
+    documentType?: DocumentType,
+  ) => {
+    if (documentType) {
+      return cleanupDuplicateEmbeddings(organizationId, documentType)
+    } else {
+      // Cleanup all types
+      const results = await Promise.all([
+        cleanupDuplicateEmbeddings(organizationId, DocumentType.EMPLOYEE),
+        cleanupDuplicateEmbeddings(organizationId, DocumentType.ATTENDANCE),
+        cleanupDuplicateEmbeddings(organizationId, DocumentType.SHIFT),
+      ])
+      return results.reduce((sum, count) => sum + count, 0)
+    }
   },
 }

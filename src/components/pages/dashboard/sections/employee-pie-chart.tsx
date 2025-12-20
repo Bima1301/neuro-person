@@ -23,11 +23,11 @@ const chartConfig = {
   },
   ACTIVE: {
     label: 'Active',
-    color: 'hsl(var(--chart-1))',
+    color: 'orange',
   },
   INACTIVE: {
     label: 'Inactive',
-    color: 'hsl(var(--chart-2))',
+    color: 'red',
   },
 } satisfies ChartConfig
 

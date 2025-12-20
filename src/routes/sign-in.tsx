@@ -82,21 +82,19 @@ function SignInPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Login Form */}
       <div className="flex-1 flex items-center justify-center bg-white p-8">
         <div className="w-full max-w-md space-y-8">
-          {/* Logo */}
-          <Logo />
+          <Link to="/" >
+            <Logo />
+          </Link>
 
-          {/* Welcome Text */}
-          <div className="space-y-2">
+          <div className="space-y-2 mt-5">
             <h1 className="text-3xl font-bold text-gray-900">Welcome back!</h1>
             <p className="text-gray-600">
               Enter to get unlimited access to data & information.
             </p>
           </div>
 
-          {/* Login Form */}
           <Form {...form}>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -166,7 +164,6 @@ function SignInPage() {
             </form>
           </Form>
 
-          {/* Register Link */}
           <div className="text-center text-sm text-gray-600">
             Don't have an account?{' '}
             <Link
@@ -177,7 +174,6 @@ function SignInPage() {
             </Link>
           </div>
 
-          {/* Employee Login Link */}
           <div className="pt-4 border-t text-center">
             <Link
               to="/employee-sign-in"
@@ -189,7 +185,6 @@ function SignInPage() {
         </div>
       </div>
 
-      {/* Right Side - Decorative Background */}
       <div className="hidden lg:flex flex-1 relative overflow-hidden bg-linear-to-br from-blue-600 via-purple-600 to-indigo-700">
         <DecorativeBackground />
       </div>
@@ -201,12 +196,10 @@ function SignInPage() {
 function DecorativeBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Geometric Shapes */}
       <div className="absolute top-20 right-20 w-64 h-64 bg-yellow-400 rounded-full opacity-20 blur-3xl" />
       <div className="absolute bottom-20 left-20 w-96 h-96 bg-purple-400 rounded-full opacity-20 blur-3xl" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-400 rounded-full opacity-15 blur-3xl" />
 
-      {/* Pattern Overlay */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-lg rotate-45" />
         <div className="absolute top-40 right-20 w-24 h-24 border-4 border-white rounded-full" />
@@ -214,7 +207,6 @@ function DecorativeBackground() {
         <div className="absolute bottom-20 right-40 w-28 h-28 border-4 border-white rounded-lg" />
       </div>
 
-      {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -224,7 +216,6 @@ function DecorativeBackground() {
         }}
       />
 
-      {/* Content in Center */}
       <div className="absolute inset-0 flex items-center justify-center p-12">
         <div className="text-center text-white space-y-6 max-w-md">
           <div className="w-20 h-20 bg-white/20 rounded-2xl mx-auto flex items-center justify-center backdrop-blur-sm">

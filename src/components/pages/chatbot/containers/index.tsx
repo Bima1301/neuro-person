@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { History, MessageSquare } from 'lucide-react'
+import { History, MessageSquare, Settings } from 'lucide-react'
 import { ChatInterface } from '../sections/chat-interface'
 import { ChatHistory } from '../sections/chat-history'
+import { ChatSettings } from '../sections/chat-settings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export function ChatBotContainer() {
@@ -21,7 +22,7 @@ export function ChatBotContainer() {
         onValueChange={setActiveTab}
         className="w-full flex flex-col flex-1 min-h-0"
       >
-        <TabsList className="grid w-full grid-cols-2 shrink-0">
+        <TabsList className="grid w-full grid-cols-3 shrink-0">
           <TabsTrigger value="chat" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
             Chat
@@ -29,6 +30,10 @@ export function ChatBotContainer() {
           <TabsTrigger value="history" className="flex items-center gap-2">
             <History className="h-4 w-4" />
             Riwayat
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Pengaturan
           </TabsTrigger>
         </TabsList>
 
@@ -38,6 +43,10 @@ export function ChatBotContainer() {
 
         <TabsContent value="history" className="mt-6">
           <ChatHistory />
+        </TabsContent>
+
+        <TabsContent value="settings" className="mt-6">
+          <ChatSettings />
         </TabsContent>
       </Tabs>
     </div>

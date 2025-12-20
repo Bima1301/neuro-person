@@ -279,6 +279,7 @@ export function EmployeeForm({
                         placeholder="EMP001"
                         className={inputClassName}
                         {...field}
+                        disabled={darkMode}
                       />
                     </FormControl>
                     <FormMessage />
@@ -320,6 +321,7 @@ export function EmployeeForm({
                     placeholder="John"
                     className={inputClassName}
                     {...field}
+                    disabled={darkMode}
                   />
                 </FormControl>
                 <FormMessage />
@@ -340,6 +342,7 @@ export function EmployeeForm({
                     placeholder="Doe"
                     className={inputClassName}
                     {...field}
+                    disabled={darkMode}
                   />
                 </FormControl>
                 <FormMessage />
@@ -476,7 +479,9 @@ export function EmployeeForm({
                     Tanggal Bergabung *
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" className={inputClassName} {...field} />
+                    <Input type="date" className={inputClassName} {...field}
+                      disabled={darkMode}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -491,7 +496,7 @@ export function EmployeeForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className={labelClassName}>Status</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={darkMode}>
                     <FormControl>
                       <SelectTrigger className={selectClassName}>
                         <SelectValue />
@@ -539,6 +544,7 @@ export function EmployeeForm({
                     field.onChange(value === '' ? null : value)
                   }
                   value={field.value || ''}
+                  disabled={darkMode}
                 >
                   <FormControl>
                     <SelectTrigger className={selectClassName}>
@@ -595,6 +601,7 @@ export function EmployeeForm({
                     field.onChange(value === '' ? null : value)
                   }
                   value={field.value || ''}
+                  disabled={darkMode}
                 >
                   <FormControl>
                     <SelectTrigger className={selectClassName}>
@@ -659,7 +666,7 @@ export function EmployeeForm({
                   <FormLabel className={labelClassName}>
                     Tipe Karyawan
                   </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={darkMode}>
                     <FormControl>
                       <SelectTrigger className={selectClassName}>
                         <SelectValue placeholder="Pilih tipe karyawan" />
@@ -691,6 +698,7 @@ export function EmployeeForm({
                     className={inputClassName}
                     {...field}
                     onChange={(_e, rawValue) => field.onChange(rawValue)}
+                    disabled={darkMode}
                   />
                 </FormControl>
                 <FormMessage />

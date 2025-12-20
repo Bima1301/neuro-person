@@ -6,7 +6,7 @@ export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
 		provider: "postgresql",
 	}),
-	secret: process.env.BETTER_AUTH_SECRET || import.meta.env.BETTER_AUTH_SECRET,
+	secret: process.env.BETTER_AUTH_SECRET || process.env.BETTER_AUTH_SECRET,
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: false,
@@ -19,12 +19,12 @@ export const auth = betterAuth({
 			maxAge: 60 * 5, // 5 minutes
 		},
 	},
-	baseURL: import.meta.env.VITE_APP_URL || "http://localhost:3000",
+	baseURL: process.env.VITE_APP_URL || "http://localhost:3000",
 	// CHANGED: dari /api/auth ke /session untuk avoid ad blocker
 	basePath: "/session",
-	trustedOrigins: [import.meta.env.VITE_APP_URL || "http://localhost:3000"],
+	trustedOrigins: [process.env.VITE_APP_URL || "http://localhost:3000"],
 	advanced: {
-		useSecureCookies: import.meta.env.PROD,
+		useSecureCookies: process.env.PROD === "true",
 	},
 });
 
@@ -67,7 +67,7 @@ export async function getSessionFromRequest(
 				};
 			}
 		} catch (apiError) {
-			if (import.meta.env.DEV) {
+			if (process.env.DEV) {
 				console.log(
 					"[Better Auth] API method failed, trying cookie method:",
 					apiError,
@@ -113,12 +113,12 @@ export async function getSessionFromRequest(
 				sessionId: session.id,
 			};
 		} else {
-			if (import.meta.env.DEV) {
+			if (process.env.DEV) {
 				console.log("[Better Auth] Session not found in database for token");
 			}
 		}
 	} catch (error) {
-		if (import.meta.env.DEV) {
+		if (process.env.DEV) {
 			console.error("[Better Auth] Error getting session:", error);
 		}
 	}

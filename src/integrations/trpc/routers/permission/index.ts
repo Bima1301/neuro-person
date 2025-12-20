@@ -36,11 +36,11 @@ export const permissionRouter = {
         ...(input?.status && { status: input.status }),
         ...(input?.month &&
           input.year && {
-            startDate: {
-              gte: new Date(Number(input.year), Number(input.month), 1),
-              lte: new Date(Number(input.year), Number(input.month) + 1, 0),
-            },
-          }),
+          startDate: {
+            gte: new Date(Number(input.year), Number(input.month), 1),
+            lte: new Date(Number(input.year), Number(input.month) + 1, 0),
+          },
+        }),
       }
 
       // Add search filter if provided
@@ -102,11 +102,11 @@ export const permissionRouter = {
         ...(input?.status && { status: input.status }),
         ...(input?.month &&
           input.year && {
-            startDate: {
-              gte: new Date(Number(input.year), Number(input.month) - 1, 1),
-              lte: new Date(Number(input.year), Number(input.month), 0),
-            },
-          }),
+          startDate: {
+            gte: new Date(Number(input.year), Number(input.month) - 1, 1),
+            lte: new Date(Number(input.year), Number(input.month), 0),
+          },
+        }),
         ...(input?.cursor && {
           id: {
             lt: input.cursor,
@@ -180,6 +180,20 @@ export const permissionRouter = {
     .mutation(async ({ input, ctx }) => {
       const start = new Date(input.startDate)
       const end = new Date(input.endDate)
+
+      const permissionByDate = await prisma.permissionRequest.findFirst({
+        where: {
+          employeeId: input.employeeId,
+          startDate: {
+            gte: start,
+            lte: end,
+          },
+        },
+      })
+
+      if (permissionByDate && permissionByDate.status !== 'PENDING') {
+        throw new Error('Karyawan sudah memiliki perizinan pada tanggal tersebut')
+      }
 
       return await prisma.permissionRequest.create({
         data: {

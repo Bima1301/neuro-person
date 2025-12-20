@@ -8,12 +8,17 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   },
-  // Pastikan ESLint enabled (hanya untuk linting, tidak auto-fix)
+  // Pastikan ESLint enabled dengan auto-fix on save
   "eslint.enable": true,
   "eslint.validate": [
     "javascript",
     "javascriptreact",
     "typescript",
     "typescriptreact"
-  ]
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.format.enable": true
 }

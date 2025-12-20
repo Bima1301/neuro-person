@@ -1,9 +1,9 @@
 import { MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import L from "leaflet";
+import { Button } from "@/components/ui/button";
 import "leaflet/dist/leaflet.css";
 
 interface LocationSectionProps {

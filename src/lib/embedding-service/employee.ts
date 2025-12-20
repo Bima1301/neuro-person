@@ -72,15 +72,17 @@ export async function deleteEmployeeEmbedding(
   organizationId: string,
 ): Promise<void> {
   try {
-    await prisma.documentEmbedding.deleteMany({
-      where: {
-        organizationId,
-        metadata: {
-          path: ['type', 'id'],
-          equals: [DocumentType.EMPLOYEE, employeeId],
-        },
-      },
-    })
+    await prisma.$executeRawUnsafe(
+      `
+      DELETE FROM "DocumentEmbedding"
+      WHERE "organizationId" = $1
+        AND metadata->>'type' = $2
+        AND metadata->>'id' = $3
+      `,
+      organizationId,
+      DocumentType.EMPLOYEE,
+      employeeId,
+    )
     console.log(`✅ Deleted embedding for employee: ${employeeId}`)
   } catch (error) {
     console.error(`❌ Error deleting employee embedding ${employeeId}:`, error)

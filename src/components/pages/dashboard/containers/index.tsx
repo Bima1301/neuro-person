@@ -6,7 +6,6 @@ import { StatsCards } from '../sections/stats-cards'
 export function DashboardContainer() {
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground">
@@ -14,16 +13,13 @@ export function DashboardContainer() {
         </p>
       </div>
 
-      {/* Stats Cards */}
       <StatsCards />
 
-      {/* Charts */}
       <div className="grid gap-6 md:grid-cols-2">
         <EmployeePieChart />
         <AttendanceLineChart />
       </div>
 
-      {/* Attendance Overview */}
       <AttendanceOverview />
     </div>
   )

@@ -1,7 +1,7 @@
 
-import { Prisma } from "@/generated/prisma/client";
-import { DocumentType } from "@/lib/embedding-service/utils";
 import type { PaginatedResponse } from "@/lib/types";
+import type { Prisma } from "@/generated/prisma/client";
+import type { DocumentType } from "@/lib/embedding-service/utils";
 
 /**
  * Chat history item dari database
@@ -51,7 +51,7 @@ export interface ChatSource {
  * Metadata untuk chat context
  */
 export interface ChatContextMetadata {
-	sources: ChatSource[];
+	sources: Array<ChatSource>;
 	totalSources: number;
 	searchTime: number; // milliseconds
 	totalTime: number; // milliseconds
@@ -62,12 +62,12 @@ export interface ChatContextMetadata {
  */
 export interface ChatQueryResponse {
 	answer: string;
-	sources: ChatSource[];
+	sources: Array<ChatSource>;
 	metadata: {
 		totalSources: number;
 		searchTime: number;
 		totalTime: number;
-		documentTypes: DocumentType[];
+		documentTypes: Array<DocumentType>;
 	};
 }
 
@@ -91,7 +91,7 @@ export interface ReindexResult {
 	success: number;
 	failed: number;
 	total: number;
-	errors?: string[];
+	errors?: Array<string>;
 }
 
 /**

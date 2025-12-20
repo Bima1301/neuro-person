@@ -1,9 +1,7 @@
-// Seed file disabled for multi-tenancy
-// Data will be created per organization during onboarding
+import { seed } from './seed/index.js'
 
-async function main() {
-  console.log("Seeding skipped - multi-tenancy mode");
-  console.log("Data will be created per organization during onboarding");
-}
-
-main();
+seed()
+	.catch((e) => {
+		console.error('❌ Error during seeding:', e)
+		process.exit(1)
+	})

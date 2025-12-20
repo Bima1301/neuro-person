@@ -1,7 +1,7 @@
 
 // src/server/routers/chat/validation.ts
-import { DocumentType } from "@/lib/embedding-service/utils";
-import { z } from "zod";
+import { z } from "zod"
+import { DocumentType } from "@/lib/embedding-service/utils"
 import { requiredStringFor } from '@/lib/utils'
 
 export const chatQueryInput = z.object({
@@ -40,7 +40,7 @@ export const chatClearHistoryInput = z.object({
 });
 
 export const chatReindexInput = z.object({
-  documentType: z.enum(Object.values(DocumentType)).optional(),
+  documentType: z.nativeEnum(DocumentType).optional(),
   documentIds: z.array(z.string()).optional(),
   reindexAll: z.boolean().default(false),
   startDate: z.string().optional(),
@@ -48,12 +48,12 @@ export const chatReindexInput = z.object({
 });
 
 export const chatEmbeddingStatsInput = z.object({
-  documentType: z.enum(Object.values(DocumentType)).optional(),
+  documentType: z.nativeEnum(DocumentType).optional(),
 });
 
 export const chatSearchInput = z.object({
   query: requiredStringFor('Query pencarian'),
-  documentType: z.enum(Object.values(DocumentType)).optional(),
+  documentType: z.nativeEnum(DocumentType).optional(),
   limit: z.number().min(1).max(20).default(5),
   minSimilarity: z.number().min(0).max(1).default(0).optional(),
 })

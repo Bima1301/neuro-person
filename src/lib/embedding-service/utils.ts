@@ -1,12 +1,8 @@
 import { generateEmbedding } from '../local-embedding'
+import { DocumentType } from './types'
 import { prisma } from '@/db'
 
-export enum DocumentType {
-  EMPLOYEE = 'employee',
-  ATTENDANCE = 'attendance',
-  SHIFT = 'shift',
-  PERMISSION = 'permission',
-}
+export { DocumentType }
 
 export interface DocumentMetadata {
   type: DocumentType
@@ -15,9 +11,6 @@ export interface DocumentMetadata {
   [key: string]: any
 }
 
-/**
- * Upsert embedding to database
- */
 export async function upsertEmbedding(
   organizationId: string,
   content: string,
@@ -68,9 +61,67 @@ export async function upsertEmbedding(
   }
 }
 
-/**
- * Delete embedding by document type and ID
- */
+
+export async function cleanupDuplicateEmbeddings(
+  organizationId: string,
+  documentType: DocumentType,
+): Promise<number> {
+  try {
+    // Count duplicates using CTE and ROW_NUMBER
+    const countResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
+      WITH ranked_embeddings AS (
+        SELECT 
+          id,
+          ROW_NUMBER() OVER (
+            PARTITION BY metadata->>'id' 
+            ORDER BY "updatedAt" DESC, "createdAt" DESC
+          ) as rn
+        FROM "DocumentEmbedding"
+        WHERE "organizationId" = ${organizationId}
+          AND metadata->>'type' = ${documentType}
+      )
+      SELECT COUNT(*)::bigint as count
+      FROM ranked_embeddings
+      WHERE rn > 1
+    `
+
+    const duplicateCount = Number(countResult[0]?.count || 0)
+
+    if (duplicateCount > 0) {
+      // Delete duplicates, keeping the most recent one
+      await prisma.$executeRaw`
+        WITH ranked_embeddings AS (
+          SELECT 
+            id,
+            ROW_NUMBER() OVER (
+              PARTITION BY metadata->>'id' 
+              ORDER BY "updatedAt" DESC, "createdAt" DESC
+            ) as rn
+          FROM "DocumentEmbedding"
+          WHERE "organizationId" = ${organizationId}
+            AND metadata->>'type' = ${documentType}
+        )
+        DELETE FROM "DocumentEmbedding"
+        WHERE id IN (
+          SELECT id FROM ranked_embeddings WHERE rn > 1
+        )
+      `
+
+      console.log(
+        `✅ Cleaned up ${duplicateCount} duplicate embeddings for ${documentType}`,
+      )
+    }
+
+    return duplicateCount
+  } catch (error) {
+    console.error(
+      `❌ Error cleaning up duplicate embeddings for ${documentType}:`,
+      error,
+    )
+    throw error
+  }
+}
+
 export async function deleteEmbedding(
   documentId: string,
   documentType: DocumentType,
@@ -96,9 +147,6 @@ export async function deleteEmbedding(
   }
 }
 
-/**
- * Vector search for documents
- */
 export async function vectorSearch<T = any>(
   query: string,
   organizationId: string,
@@ -167,9 +215,6 @@ export async function vectorSearch<T = any>(
   }
 }
 
-/**
- * Get embedding statistics for a document type
- */
 export async function getEmbeddingStats(
   organizationId: string,
   documentType: DocumentType,
@@ -182,7 +227,6 @@ export async function getEmbeddingStats(
 }> {
   let totalDocuments = 0
 
-  // Count total documents based on type
   if (documentType === DocumentType.EMPLOYEE) {
     totalDocuments = await prisma.employee.count({
       where: { organizationId },
@@ -197,7 +241,6 @@ export async function getEmbeddingStats(
     })
   }
 
-  // Count total embeddings
   const [totalEmbeddings, latestEmbedding] = await Promise.all([
     prisma.documentEmbedding.count({
       where: {
@@ -234,7 +277,39 @@ export async function getEmbeddingStats(
     totalDocuments,
     totalEmbeddings,
     coverage,
-    needsIndexing: totalDocuments - totalEmbeddings,
+    needsIndexing: Math.max(0, totalDocuments - totalEmbeddings),
     lastUpdated: latestEmbedding?.updatedAt,
   }
+}
+
+export async function batchUpsertEmbeddings(
+  embeddings: Array<{
+    organizationId: string
+    content: string
+    embeddingVector: Array<number>
+    metadata: DocumentMetadata
+  }>,
+): Promise<{ success: number; failed: number }> {
+  let success = 0
+  let failed = 0
+
+  for (const embedding of embeddings) {
+    try {
+      await upsertEmbedding(
+        embedding.organizationId,
+        embedding.content,
+        embedding.embeddingVector,
+        embedding.metadata,
+      )
+      success++
+    } catch (error) {
+      console.error(
+        `Failed to upsert embedding for ${embedding.metadata.type}:${embedding.metadata.id}`,
+        error,
+      )
+      failed++
+    }
+  }
+
+  return { success, failed }
 }
