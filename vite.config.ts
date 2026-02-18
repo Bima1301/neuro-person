@@ -9,7 +9,14 @@ import { nitro } from 'nitro/vite'
 const config = defineConfig({
   plugins: [
     devtools(),
-    nitro(),
+    nitro({
+      rollupConfig: {
+        external: (id) =>
+          id === '@prisma/client' ||
+          id.startsWith('@prisma/client/') ||
+          id.includes('query_compiler_bg'),
+      },
+    }),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
