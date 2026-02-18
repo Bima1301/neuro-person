@@ -27,6 +27,10 @@ export const env = createEnv({
     VITE_CLOUDINARY_CLOUD_NAME: z.string().min(1),
     VITE_CLOUDINARY_API_KEY: z.string().min(1),
     VITE_CLOUDINARY_API_SECRET: z.string().min(1),
+    VITE_IS_DEMO: z
+      .string()
+      .optional()
+      .transform((val) => (val === undefined ? undefined : val === 'true')),
   },
 
   /**

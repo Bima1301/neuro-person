@@ -26,6 +26,7 @@ import { Route as EmployeeAttendanceRouteImport } from './routes/employee/attend
 import { Route as AppShiftsRouteImport } from './routes/app/shifts'
 import { Route as AppShiftAllocationRouteImport } from './routes/app/shift-allocation'
 import { Route as AppSalaryComponentsRouteImport } from './routes/app/salary-components'
+import { Route as AppReportsRouteImport } from './routes/app/reports'
 import { Route as AppPositionsRouteImport } from './routes/app/positions'
 import { Route as AppPermissionRouteImport } from './routes/app/permission'
 import { Route as AppPayrollRouteImport } from './routes/app/payroll'
@@ -37,6 +38,8 @@ import { Route as AppAttendanceTypesRouteImport } from './routes/app/attendance-
 import { Route as AppAttendanceRouteImport } from './routes/app/attendance'
 import { Route as EmployeeCicoIndexRouteImport } from './routes/employee/cico/index'
 import { Route as EmployeeCicoTypeRouteImport } from './routes/employee/cico/$type'
+import { Route as AppReportsEmployeesRouteImport } from './routes/app/reports/employees'
+import { Route as AppReportsAttendanceRouteImport } from './routes/app/reports/attendance'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -125,6 +128,11 @@ const AppSalaryComponentsRoute = AppSalaryComponentsRouteImport.update({
   path: '/salary-components',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPositionsRoute = AppPositionsRouteImport.update({
   id: '/positions',
   path: '/positions',
@@ -180,6 +188,16 @@ const EmployeeCicoTypeRoute = EmployeeCicoTypeRouteImport.update({
   path: '/cico/$type',
   getParentRoute: () => EmployeeRoute,
 } as any)
+const AppReportsEmployeesRoute = AppReportsEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => AppReportsRoute,
+} as any)
+const AppReportsAttendanceRoute = AppReportsAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AppReportsRoute,
+} as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
   path: '/api/trpc/$',
@@ -208,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/reports': typeof AppReportsRouteWithChildren
   '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
@@ -220,6 +239,8 @@ export interface FileRoutesByFullPath {
   '/employee/': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/app/reports/attendance': typeof AppReportsAttendanceRoute
+  '/app/reports/employees': typeof AppReportsEmployeesRoute
   '/employee/cico/$type': typeof EmployeeCicoTypeRoute
   '/employee/cico': typeof EmployeeCicoIndexRoute
 }
@@ -238,6 +259,7 @@ export interface FileRoutesByTo {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/reports': typeof AppReportsRouteWithChildren
   '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
@@ -250,6 +272,8 @@ export interface FileRoutesByTo {
   '/employee': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/app/reports/attendance': typeof AppReportsAttendanceRoute
+  '/app/reports/employees': typeof AppReportsEmployeesRoute
   '/employee/cico/$type': typeof EmployeeCicoTypeRoute
   '/employee/cico': typeof EmployeeCicoIndexRoute
 }
@@ -271,6 +295,7 @@ export interface FileRoutesById {
   '/app/payroll': typeof AppPayrollRoute
   '/app/permission': typeof AppPermissionRoute
   '/app/positions': typeof AppPositionsRoute
+  '/app/reports': typeof AppReportsRouteWithChildren
   '/app/salary-components': typeof AppSalaryComponentsRoute
   '/app/shift-allocation': typeof AppShiftAllocationRoute
   '/app/shifts': typeof AppShiftsRoute
@@ -283,6 +308,8 @@ export interface FileRoutesById {
   '/employee/': typeof EmployeeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/app/reports/attendance': typeof AppReportsAttendanceRoute
+  '/app/reports/employees': typeof AppReportsEmployeesRoute
   '/employee/cico/$type': typeof EmployeeCicoTypeRoute
   '/employee/cico/': typeof EmployeeCicoIndexRoute
 }
@@ -305,6 +332,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/reports'
     | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
@@ -317,6 +345,8 @@ export interface FileRouteTypes {
     | '/employee/'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/app/reports/attendance'
+    | '/app/reports/employees'
     | '/employee/cico/$type'
     | '/employee/cico'
   fileRoutesByTo: FileRoutesByTo
@@ -335,6 +365,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/reports'
     | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
@@ -347,6 +378,8 @@ export interface FileRouteTypes {
     | '/employee'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/app/reports/attendance'
+    | '/app/reports/employees'
     | '/employee/cico/$type'
     | '/employee/cico'
   id:
@@ -367,6 +400,7 @@ export interface FileRouteTypes {
     | '/app/payroll'
     | '/app/permission'
     | '/app/positions'
+    | '/app/reports'
     | '/app/salary-components'
     | '/app/shift-allocation'
     | '/app/shifts'
@@ -379,6 +413,8 @@ export interface FileRouteTypes {
     | '/employee/'
     | '/api/auth/$'
     | '/api/trpc/$'
+    | '/app/reports/attendance'
+    | '/app/reports/employees'
     | '/employee/cico/$type'
     | '/employee/cico/'
   fileRoutesById: FileRoutesById
@@ -517,6 +553,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSalaryComponentsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/reports': {
+      id: '/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/positions': {
       id: '/app/positions'
       path: '/positions'
@@ -594,6 +637,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeCicoTypeRouteImport
       parentRoute: typeof EmployeeRoute
     }
+    '/app/reports/employees': {
+      id: '/app/reports/employees'
+      path: '/employees'
+      fullPath: '/app/reports/employees'
+      preLoaderRoute: typeof AppReportsEmployeesRouteImport
+      parentRoute: typeof AppReportsRoute
+    }
+    '/app/reports/attendance': {
+      id: '/app/reports/attendance'
+      path: '/attendance'
+      fullPath: '/app/reports/attendance'
+      preLoaderRoute: typeof AppReportsAttendanceRouteImport
+      parentRoute: typeof AppReportsRoute
+    }
     '/api/trpc/$': {
       id: '/api/trpc/$'
       path: '/api/trpc/$'
@@ -611,6 +668,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppReportsRouteChildren {
+  AppReportsAttendanceRoute: typeof AppReportsAttendanceRoute
+  AppReportsEmployeesRoute: typeof AppReportsEmployeesRoute
+}
+
+const AppReportsRouteChildren: AppReportsRouteChildren = {
+  AppReportsAttendanceRoute: AppReportsAttendanceRoute,
+  AppReportsEmployeesRoute: AppReportsEmployeesRoute,
+}
+
+const AppReportsRouteWithChildren = AppReportsRoute._addFileChildren(
+  AppReportsRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAttendanceRoute: typeof AppAttendanceRoute
   AppAttendanceTypesRoute: typeof AppAttendanceTypesRoute
@@ -621,6 +692,7 @@ interface AppRouteChildren {
   AppPayrollRoute: typeof AppPayrollRoute
   AppPermissionRoute: typeof AppPermissionRoute
   AppPositionsRoute: typeof AppPositionsRoute
+  AppReportsRoute: typeof AppReportsRouteWithChildren
   AppSalaryComponentsRoute: typeof AppSalaryComponentsRoute
   AppShiftAllocationRoute: typeof AppShiftAllocationRoute
   AppShiftsRoute: typeof AppShiftsRoute
@@ -637,6 +709,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPayrollRoute: AppPayrollRoute,
   AppPermissionRoute: AppPermissionRoute,
   AppPositionsRoute: AppPositionsRoute,
+  AppReportsRoute: AppReportsRouteWithChildren,
   AppSalaryComponentsRoute: AppSalaryComponentsRoute,
   AppShiftAllocationRoute: AppShiftAllocationRoute,
   AppShiftsRoute: AppShiftsRoute,

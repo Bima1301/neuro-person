@@ -1,7 +1,8 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AlertCircle, Brain, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
+import { DEMO_USERS } from 'prisma/seed/data'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,12 +16,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { authClient, useSession } from '@/integrations/better-auth/client'
 import { useTRPC } from '@/integrations/trpc/react'
+import { env } from '@/env'
 
 export const Route = createFileRoute('/employee-sign-in')({
   component: EmployeeSignInPage,
 })
 
 function EmployeeSignInPage() {
+  const isDemo = env.VITE_IS_DEMO
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -40,6 +43,17 @@ function EmployeeSignInPage() {
       navigate({ to: '/employee' })
     }
   }, [session, isSessionLoading, navigate])
+
+  const { data: employee } = useQuery(
+    { ...trpc.employee.getByEmail.queryOptions({ email: isDemo ? DEMO_USERS.find(user => user.role === 'EMPLOYEE')?.email || '' : '' }), enabled: isDemo },
+  )
+
+  useEffect(() => {
+    if (isDemo && employee) {
+      setUsername(employee.email)
+      setPassword('123123123')
+    }
+  }, [isDemo, employee])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,9 +103,9 @@ function EmployeeSignInPage() {
       console.error('Error during sign-in:', error)
       const errorMessage =
         error &&
-        typeof error === 'object' &&
-        'message' in error &&
-        typeof (error as { message: string }).message === 'string'
+          typeof error === 'object' &&
+          'message' in error &&
+          typeof (error as { message: string }).message === 'string'
           ? (error as { message: string }).message
           : 'Terjadi kesalahan saat memvalidasi username'
       setValidationError(errorMessage)

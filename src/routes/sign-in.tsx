@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
+import { DEMO_USERS } from 'prisma/seed/data'
 import CircleLoader from '@/components/shared/circle-loader'
 import Logo from '@/components/shared/logo'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { authClient, useSession } from '@/integrations/better-auth/client'
+import { env } from '@/env'
 
 export const Route = createFileRoute('/sign-in')({
   component: SignInPage,
@@ -31,6 +33,7 @@ const signInSchema = z.object({
 type SignInSchema = z.infer<typeof signInSchema>
 
 function SignInPage() {
+  const isDemo = env.VITE_IS_DEMO
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   })
@@ -47,6 +50,14 @@ function SignInPage() {
       navigate({ to: '/app' })
     }
   }, [navigate, session?.user, isSessionLoading])
+
+  useEffect(() => {
+    if (isDemo) {
+      form.setValue('email', DEMO_USERS[0].email)
+      form.setValue('password', '123123123')
+    }
+  }, [isDemo])
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

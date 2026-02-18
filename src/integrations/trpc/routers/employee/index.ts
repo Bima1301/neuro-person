@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server'
 import { read, utils, write } from 'xlsx'
-import { protectedProcedure } from '../../init'
+import z from 'zod'
+import { protectedProcedure, publicProcedure } from '../../init'
 import {
   employeeCreateInput,
   employeeDeleteInput,
@@ -109,6 +110,14 @@ export const employeeRouter = {
           organization: { select: { name: true } },
           allowances: { include: { allowanceType: true } },
         },
+      })
+    }),
+
+  getByEmail: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .query(async ({ input }) => {
+      return await prisma.employee.findFirst({
+        where: { email: input.email },
       })
     }),
 
