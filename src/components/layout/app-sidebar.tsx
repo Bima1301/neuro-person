@@ -274,8 +274,8 @@ export function AppSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link to="/app">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Brain className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white text-primary-foreground">
+                  <img src="/logo192.png" alt="NeuroPerson" className="w-full h-full object-contain" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">NeuroPerson</span>

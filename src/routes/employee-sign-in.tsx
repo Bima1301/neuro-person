@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { AlertCircle, Brain, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useEffect, useId, useState } from 'react'
 import { DEMO_USERS } from 'prisma/seed/data'
@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { authClient, useSession } from '@/integrations/better-auth/client'
 import { useTRPC } from '@/integrations/trpc/react'
 import { env } from '@/env'
+import Logo from '@/components/shared/logo'
 
 export const Route = createFileRoute('/employee-sign-in')({
   component: EmployeeSignInPage,
@@ -125,14 +126,9 @@ function EmployeeSignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-slate-900 to-slate-800 p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2">
-            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-              <Brain className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white">NeuroPerson</span>
-          </div>
-        </div>
+        <Link className="flex justify-center mb-8" to="/">
+          <Logo />
+        </Link>
 
         <Card className="bg-stone-900 border-white/5 shadow-xl">
           <CardHeader>

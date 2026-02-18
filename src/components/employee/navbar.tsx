@@ -1,7 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { BarChart3, Calendar, Clock, Fingerprint, Home, User } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
 import { useTRPC } from "@/integrations/trpc/react";
 
 const navItems = [

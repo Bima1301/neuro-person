@@ -229,8 +229,8 @@ function DecorativeBackground() {
 
       <div className="absolute inset-0 flex items-center justify-center p-12">
         <div className="text-center text-white space-y-6 max-w-md">
-          <div className="w-20 h-20 bg-white/20 rounded-2xl mx-auto flex items-center justify-center backdrop-blur-sm">
-            <Brain className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 bg-white/20 rounded-2xl mx-auto flex items-center justify-center backdrop-blur-sm p-1">
+            <img src="/logo192.png" alt="NeuroPerson" className="w-full h-full object-contain" />
           </div>
           <h2 className="text-4xl font-bold">NeuroPerson</h2>
           <p className="text-white/80 text-lg">
