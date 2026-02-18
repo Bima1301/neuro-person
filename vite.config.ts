@@ -19,6 +19,10 @@ const config = defineConfig({
     viteReact(),
   ],
   ssr: {
+    external: [
+      "@prisma/client",
+      ".prisma/client",
+    ],
     noExternal: ['xlsx']
   },
   optimizeDeps: {
